@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>images/white_piece.png</file>
+        <file>images/nine_mens_morris_board.png</file>
+        <file>images/black_piece.png</file>
+    </qresource>
+</RCC>
