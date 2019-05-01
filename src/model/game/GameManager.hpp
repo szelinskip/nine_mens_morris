@@ -32,6 +32,8 @@ public:
     void setController(controller::MasterController* controller);
 
     void run();
+    void stop();
+    bool shouldStop() const;
 
     void putAction(ActionPtr action);
     std::string getInput();
@@ -54,13 +56,17 @@ private:
     std::thread gameThread;
 
     std::atomic<bool> gameRunning;
+    std::unique_ptr<NineMensMorris> nineMensMorris;
 
     std::atomic<bool> shouldRunLoop;
 
     std::mutex userInputMutex;
     std::condition_variable userInputProvided;
+    uint32_t waitingForInput;
     bool inputProvided;
     std::string userInput;
+
+    std::atomic<bool> shouldTerminate;
 };
 
 }

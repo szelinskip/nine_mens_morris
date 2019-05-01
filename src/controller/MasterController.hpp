@@ -31,6 +31,7 @@ public:
     void userInputField(const std::string& boardField);
     void updateUI(const std::string& boardField, PlayerColor checker);
     void startGame();
+    void goingDead();
 
 private:
     CheckerType convertColor(PlayerColor color) const;

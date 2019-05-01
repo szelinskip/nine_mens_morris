@@ -11,7 +11,9 @@ namespace model {
 GameManager::GameManager()
     : gameRunning(false)
     , shouldRunLoop(false)
+    , waitingForInput(0)
     , inputProvided(false)
+    , shouldTerminate(false)
 {
 }
 
@@ -20,6 +22,18 @@ void GameManager::run()
     std::cout << __FUNCTION__ << std::endl;
     shouldRunLoop = true;
     actionsLoopThread = std::thread(&GameManager::runningLoop, this);
+}
+
+void GameManager::stop()
+{
+    // release waiting threads to join them properly
+    shouldTerminate = true;
+    userInputProvided.notify_all();
+}
+
+bool GameManager::shouldStop() const
+{
+    return shouldTerminate;
 }
 
 GameManager::~GameManager()
@@ -39,6 +53,8 @@ void GameManager::setController(controller::MasterController* controller)
 
 void GameManager::putAction(ActionPtr action)
 {
+    if(shouldTerminate)
+        return;
     std::cout << __FUNCTION__ << std::endl;
     std::lock_guard<std::mutex> lock(actionsQMutex);
     actionsQueue.push(std::move(action));
@@ -48,7 +64,7 @@ std::string GameManager::getInput()
 {
     std::cout << __FUNCTION__ << std::endl;
     std::unique_lock<std::mutex> lock(userInputMutex);
-    userInputProvided.wait(lock, [this](){return inputProvided;});
+    userInputProvided.wait(lock, [this](){return inputProvided || shouldTerminate;});
     inputProvided = false;
     std::cout << __FUNCTION__ << " input got " << userInput << std::endl;
     return userInput;
@@ -86,10 +102,11 @@ void GameManager::runGame()
 {
     std::cout << __FUNCTION__ << std::endl;
     gameRunning = true;
-    NineMensMorris nineMensMorris(
+    nineMensMorris = std::make_unique<NineMensMorris>(
         std::make_unique<HumanPlayer>(*this, "Player white", PlayerColor::White),
-        std::make_unique<HumanPlayer>(*this, "Player black", PlayerColor::Black));
-    nineMensMorris.startGame();
+        std::make_unique<HumanPlayer>(*this, "Player black", PlayerColor::Black),
+        this);
+    nineMensMorris->startGame();
 }
 
 void GameManager::handleAction(ActionPtr action)
@@ -118,6 +135,8 @@ void GameManager::handleAction(ActionPtr action)
 void GameManager::handleInputReq()
 {
     std::cout << __FUNCTION__ << std::endl;
+    std::lock_guard<std::mutex> lock(userInputMutex);
+    waitingForInput++;
 }
 
 void GameManager::handleInputProvided(ActionPtr action)
@@ -127,9 +146,13 @@ void GameManager::handleInputProvided(ActionPtr action)
     if(actionInputProvided == nullptr)
         throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
     std::lock_guard<std::mutex> lock(userInputMutex);
-    inputProvided = true;
-    userInput = actionInputProvided->getBoardField();
-    userInputProvided.notify_all();
+    if(waitingForInput > 0)
+    {
+        inputProvided = true;
+        waitingForInput--;
+        userInput = actionInputProvided->getBoardField();
+        userInputProvided.notify_all();
+    }
 }
 
 void GameManager::handleGameStart()

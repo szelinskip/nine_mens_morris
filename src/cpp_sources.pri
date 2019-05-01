@@ -1,5 +1,6 @@
 SOURCES += \
         $$PWD/controller/MasterController.cpp \
+        $$PWD/controller/AppCleaner.cpp \
         \
         $$PWD/model/communication/Action.cpp \
         \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
         $$PWD/controller/MasterController.hpp \
+        $$PWD/controller/AppCleaner.hpp \
         \
         $$PWD/model/communication/Action.hpp \
         $$PWD/model/communication/ActionType.hpp \

@@ -1,16 +1,18 @@
 #include "NineMensMorris.hpp"
 
 #include "player/Player.hpp"
+#include "GameManager.hpp"
 
 #include <algorithm>
 #include <iostream>
 
 namespace model {
 
-NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer)
+NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager)
     : whitePlayer(std::move(whitePlayer))
     , blackPlayer(std::move(blackPlayer))
     , currentPlayer(nullptr)
+    , gameManager(gameManager)
 {
 }
 
@@ -21,7 +23,7 @@ void NineMensMorris::startGame()
     std::cout << __FUNCTION__ << std::endl;
     bool gameOver = false;
     Player* winner = nullptr;
-    while(!gameOver)
+    while(!gameOver && !gameManager->shouldStop())
     {
         if(!checkGameOverCondition())
         {

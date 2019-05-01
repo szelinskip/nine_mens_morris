@@ -55,4 +55,9 @@ void MasterController::startGame()
     gameManager->putAction(std::move(action));
 }
 
+void MasterController::goingDead()
+{
+    gameManager->stop();
+}
+
 } // namespace controller

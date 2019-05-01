@@ -7,6 +7,7 @@
 
 namespace model {
 class Player;
+class GameManager;
 } // namespace model
 
 namespace model {
@@ -14,7 +15,7 @@ namespace model {
 class NineMensMorris
 {
 public:
-    NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer);
+    NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager);
     ~NineMensMorris();
 
     NineMensMorris() = delete;
@@ -36,6 +37,8 @@ private:
     Player* currentPlayer;
     GameState gameState;
     std::vector<GameState> gameStatesHistory;
+
+    GameManager* gameManager;
 };
 
 } // namespace model
