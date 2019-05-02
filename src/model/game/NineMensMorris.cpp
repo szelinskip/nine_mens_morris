@@ -88,7 +88,7 @@ bool NineMensMorris::isGameEndedWithDraw() const
 
 bool NineMensMorris::lastMoveCreatedMill() const
 {
-    return false; // TODO
+    return gameState.lastMoveCreatedMill();
 }
 
 } // namespace model

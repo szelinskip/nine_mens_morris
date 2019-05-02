@@ -12,7 +12,7 @@ class HumanPlayer : public Player
 {
 public:
     HumanPlayer(GameManager& gameManager, const std::string& name, PlayerColor color);
-    virtual ~HumanPlayer();
+    virtual ~HumanPlayer() override;
 
     HumanPlayer() = delete;
     HumanPlayer(const HumanPlayer&) = delete;
