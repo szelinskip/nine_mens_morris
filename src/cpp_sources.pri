@@ -14,6 +14,7 @@ SOURCES += \
         \
         $$PWD/model/game/player/Player.cpp \
         $$PWD/model/game/player/HumanPlayer.cpp \
+        $$PWD/model/game/player/ComputerPlayer.cpp \
         $$PWD/model/game/player/PlayerColor.cpp \
         \
         $$PWD/model/game/player/ai/AiAlgorithm.cpp \
@@ -38,12 +39,14 @@ HEADERS += \
         $$PWD/model/game/GameBoard.hpp \
         $$PWD/model/game/GameState.hpp \
         $$PWD/model/game/BoardField.hpp \
+        $$PWD/model/game/Move.hpp \
         $$PWD/model/game/NineMensMorris.hpp \
         $$PWD/model/game/UnsupportedActionType.hpp \
         $$PWD/model/game/ActionTypeMismatchException.hpp \
         \
         $$PWD/model/game/player/Player.hpp \
         $$PWD/model/game/player/HumanPlayer.hpp \
+        $$PWD/model/game/player/ComputerPlayer.hpp \
         $$PWD/model/game/player/PlayerColor.hpp \
         \
         $$PWD/model/game/player/ai/AiAlgorithm.hpp \

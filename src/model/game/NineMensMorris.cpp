@@ -6,10 +6,13 @@
 #include <algorithm>
 #include <iostream>
 
+using namespace std::chrono_literals;
+
 namespace model {
 
 NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager)
-    : whitePlayer(std::move(whitePlayer))
+    : pauseBetweenPlayers(1500ms)
+    , whitePlayer(std::move(whitePlayer))
     , blackPlayer(std::move(blackPlayer))
     , currentPlayer(nullptr)
     , gameManager(gameManager)
@@ -27,6 +30,7 @@ void NineMensMorris::startGame()
     {
         if(!checkGameOverCondition())
         {
+            std::cout << "game over condition FALSE" << std::endl;
             currentPlayer = getCurrentPlayer();
             currentPlayer->makeMove(gameState);
             if(lastMoveCreatedMill())
@@ -37,10 +41,14 @@ void NineMensMorris::startGame()
         }
         else
         {
+            std::cout << "game over condition TRUE" << std::endl;
             gameOver = true;
             if(!isGameEndedWithDraw())
                 winner = currentPlayer;
         }
+        std::cout << "sleeping for: 1500 ms" << std::endl;
+        std::this_thread::sleep_for(pauseBetweenPlayers);
+        std::cout << "end sleep" << std::endl;
     }
     if(winner != nullptr)
         std::cout << "winner: " << winner->getName() << std::endl;
@@ -53,6 +61,7 @@ bool NineMensMorris::checkGameOverCondition() const
     bool checkersCondition = gameState.isGameOverState();
     if(checkersCondition)
     {
+        std::cout << "checkers game over condition" << std::endl;
         return true;
     }
     else
@@ -62,6 +71,10 @@ bool NineMensMorris::checkGameOverCondition() const
                           gameStatesHistory.cend(),
                           [this](const auto& stateFromPast)
                           {return stateFromPast.isBoardEqual(gameState);});
+        if(stateRepetitionsInPast == 3)
+            std::cout << "state repeated 3 times" << std::endl;
+        else
+            std::cout << "state NOT repeated 3 times, just " << stateRepetitionsInPast << std::endl;
         return stateRepetitionsInPast == 3;
     }
 }

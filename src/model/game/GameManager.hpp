@@ -36,16 +36,17 @@ public:
     bool shouldStop() const;
 
     void putAction(ActionPtr action);
-    std::string getInput();
+    Move getInput();
 
 private:
     void runningLoop();
     void runGame();
     void handleAction(ActionPtr action);
-    void handleInputReq();
+    void handleInputReq(ActionPtr action);
     void handleInputProvided(ActionPtr action);
     void handleGameStart();
     void handleActionMoveDone(ActionPtr action);
+    Move buildInputMove();
 
     controller::MasterController* controller;
 
@@ -64,7 +65,9 @@ private:
     std::condition_variable userInputProvided;
     uint32_t waitingForInput;
     bool inputProvided;
-    std::string userInput;
+    bool millMoveInputAwaiting;
+    Move userInputMove;
+    std::vector<std::string> boardFieldInputs;
 
     std::atomic<bool> shouldTerminate;
 };

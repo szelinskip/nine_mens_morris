@@ -21,6 +21,7 @@ MasterController::~MasterController() = default;
 
 void MasterController::userInputField(const std::string& boardField)
 {
+    // TODO
     std::cout << __FUNCTION__ << " boardfield: " << boardField << std::endl;
     auto action = std::make_unique<ActionInputProvided>(boardField);
     gameManager->putAction(std::move(action));
@@ -41,11 +42,24 @@ CheckerType MasterController::convertColor(PlayerColor color) const
     }
 }
 
-void MasterController::updateUI(const std::string& boardField, PlayerColor color)
+void MasterController::updateUI(const Move& move)
 {
-    std::cout << __FUNCTION__ << " board field: " << boardField <<  std::endl;
-    CheckerType checker = convertColor(color);
-    QMetaObject::invokeMethod(mainWindow, "setCheckerOnField", Q_ARG(const std::string&, boardField), Q_ARG(CheckerType, checker));
+    std::cout << __FUNCTION__ << " move from: " << move.fromField << " to: " << move.toField <<  std::endl;
+    CheckerType checker = convertColor(move.who);
+
+    if(!move.fromField.empty())  // NOT first stage
+    {
+        // erase checker from field
+        QMetaObject::invokeMethod(mainWindow, "setCheckerOnField", Q_ARG(const std::string&, move.fromField), Q_ARG(CheckerType, CheckerType::None));
+    }
+    if(!move.toField.empty())
+    {
+        QMetaObject::invokeMethod(mainWindow, "setCheckerOnField", Q_ARG(const std::string&, move.toField), Q_ARG(CheckerType, checker));
+    }
+    if(!move.fieldOponentsCheckerTaken.empty())
+    {
+        QMetaObject::invokeMethod(mainWindow, "setCheckerOnField", Q_ARG(const std::string&, move.fieldOponentsCheckerTaken), Q_ARG(CheckerType, CheckerType::None));
+    }
 }
 
 void MasterController::startGame()

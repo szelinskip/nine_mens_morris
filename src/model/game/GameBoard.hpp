@@ -7,17 +7,9 @@
 
 #include "player/PlayerColor.hpp"
 #include "BoardField.hpp"
+#include "Move.hpp"
 
 namespace model {
-
-struct Move
-{
-    std::string fromField;
-    std::string toField;
-    PlayerColor who;
-
-    std::string fieldOponentsCheckerTaken;
-};
 
 class GameBoard
 {
@@ -40,6 +32,8 @@ public:
     std::vector<std::string> getCheckersWithColor(const PlayerColor color) const;
     bool isCheckerInMill(const std::string& field) const;
     std::vector<std::string> getFreeNeighbours(const std::string& field) const;
+
+    const Move& getLastMove() const;
 
     std::string getStrRepr() const;
 

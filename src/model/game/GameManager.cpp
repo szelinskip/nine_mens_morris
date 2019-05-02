@@ -2,6 +2,9 @@
 #include "UnsupportedActionType.hpp"
 #include "ActionTypeMismatchException.hpp"
 #include "player/HumanPlayer.hpp"
+#include "player/ComputerPlayer.hpp"
+#include "player/ai/MinMaxAlg.hpp"
+#include "player/ai/EvalFnLeftCheckersDiff.hpp"
 #include <src/controller/MasterController.hpp>
 
 #include <iostream>
@@ -13,6 +16,7 @@ GameManager::GameManager()
     , shouldRunLoop(false)
     , waitingForInput(0)
     , inputProvided(false)
+    , millMoveInputAwaiting(false)
     , shouldTerminate(false)
 {
 }
@@ -60,14 +64,14 @@ void GameManager::putAction(ActionPtr action)
     actionsQueue.push(std::move(action));
 }
 
-std::string GameManager::getInput()
+Move GameManager::getInput()
 {
     std::cout << __FUNCTION__ << std::endl;
     std::unique_lock<std::mutex> lock(userInputMutex);
     userInputProvided.wait(lock, [this](){return inputProvided || shouldTerminate;});
     inputProvided = false;
-    std::cout << __FUNCTION__ << " input got " << userInput << std::endl;
-    return userInput;
+    std::cout << __FUNCTION__ << " input got " << userInputMove.fromField << " -> " << userInputMove.toField << std::endl;
+    return userInputMove;
 }
 
 void GameManager::runningLoop()
@@ -102,9 +106,14 @@ void GameManager::runGame()
 {
     std::cout << __FUNCTION__ << std::endl;
     gameRunning = true;
+    auto humanPlayer = std::make_unique<HumanPlayer>(*this, "Player white", PlayerColor::White);
+    auto minMax = std::make_unique<ai::MinMaxAlg>(PlayerColor::Black,
+                                                  std::make_unique<ai::EvalFnLeftCheckersDiff>(),
+                                                  3);
+    auto computerPlayer = std::make_unique<ComputerPlayer>(*this, "Player black", PlayerColor::Black, std::move(minMax));
     nineMensMorris = std::make_unique<NineMensMorris>(
-        std::make_unique<HumanPlayer>(*this, "Player white", PlayerColor::White),
-        std::make_unique<HumanPlayer>(*this, "Player black", PlayerColor::Black),
+        std::move(humanPlayer),
+        std::move(computerPlayer),
         this);
     nineMensMorris->startGame();
 }
@@ -119,7 +128,7 @@ void GameManager::handleAction(ActionPtr action)
             handleGameStart();
             break;
         case ActionType::InputReq:
-            handleInputReq();
+            handleInputReq(std::move(action));
             break;
         case ActionType::MoveDone:
             handleActionMoveDone(std::move(action));
@@ -132,11 +141,18 @@ void GameManager::handleAction(ActionPtr action)
     }
 }
 
-void GameManager::handleInputReq()
+void GameManager::handleInputReq(ActionPtr action)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    auto actionInputReq = dynamic_cast<ActionInputReq*>(action.get());
+    if(actionInputReq == nullptr)
+        throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
     std::lock_guard<std::mutex> lock(userInputMutex);
-    waitingForInput++;
+    if(!actionInputReq->isFirstStage() && !actionInputReq->isMillMove())
+        waitingForInput += 2;
+    else
+        waitingForInput += 1;
+    millMoveInputAwaiting = actionInputReq->isMillMove();
+    std::cout << __FUNCTION__ << "waiting for: " << waitingForInput << " is mill move? " << millMoveInputAwaiting << std::endl;
 }
 
 void GameManager::handleInputProvided(ActionPtr action)
@@ -149,9 +165,13 @@ void GameManager::handleInputProvided(ActionPtr action)
     if(waitingForInput > 0)
     {
         inputProvided = true;
+        boardFieldInputs.push_back(actionInputProvided->getBoardField());
         waitingForInput--;
-        userInput = actionInputProvided->getBoardField();
-        userInputProvided.notify_all();
+        if(waitingForInput == 0)
+        {
+            userInputMove = buildInputMove();
+            userInputProvided.notify_all();
+        }
     }
 }
 
@@ -169,7 +189,31 @@ void GameManager::handleActionMoveDone(ActionPtr action)
     auto actionMoveDone = dynamic_cast<ActionMoveDone*>(action.get());
     if(actionMoveDone == nullptr)
         throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
-    controller->updateUI(actionMoveDone->getBoardField(), actionMoveDone->getPlayerColor());
+    controller->updateUI(actionMoveDone->getMove());
+}
+
+Move GameManager::buildInputMove()
+{
+    Move m{};
+    if(boardFieldInputs.size() == 2)
+    {
+        m.fromField = boardFieldInputs[0];
+        m.toField = boardFieldInputs[1];
+    }
+    else  // size() == 1
+    {
+        if(millMoveInputAwaiting)
+        {
+            m.fieldOponentsCheckerTaken = boardFieldInputs[0];
+        }
+        else
+        {
+            m.toField = boardFieldInputs[0];
+        }
+    }
+    boardFieldInputs.clear();
+    millMoveInputAwaiting = false;
+    return m;
 }
 
 } // namespace model

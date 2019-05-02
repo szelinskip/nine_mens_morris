@@ -32,14 +32,26 @@ ActionInputProvided& ActionInputProvided::operator=(const ActionInputProvided &)
 ActionInputProvided::ActionInputProvided(ActionInputProvided &&) = default;
 ActionInputProvided& ActionInputProvided::operator=(ActionInputProvided&&) = default;
 
-std::string ActionInputProvided::getBoardField() const
+const std::string& ActionInputProvided::getBoardField() const
 {
     return boardField;
 }
 
-ActionInputReq::ActionInputReq()
+ActionInputReq::ActionInputReq(const bool firstStage, const bool millMove)
     : Action(ActionType::InputReq)
+    , firstStage(firstStage)
+    , millMove(millMove)
 {
+}
+
+bool ActionInputReq::isFirstStage() const
+{
+    return firstStage;
+}
+
+bool ActionInputReq::isMillMove() const
+{
+    return millMove;
 }
 
 ActionInputReq::~ActionInputReq() = default;
@@ -59,10 +71,9 @@ ActionGameStart& ActionGameStart::operator=(const ActionGameStart &) = default;
 ActionGameStart::ActionGameStart(ActionGameStart &&) = default;
 ActionGameStart& ActionGameStart::operator=(ActionGameStart&&) = default;
 
-ActionMoveDone::ActionMoveDone(const std::string& boardField, const PlayerColor color)
+ActionMoveDone::ActionMoveDone(const Move& move)
     : Action(ActionType::MoveDone)
-    , boardField(boardField)
-    , color(color)
+    , move(move)
 {
 }
 
@@ -72,14 +83,9 @@ ActionMoveDone& ActionMoveDone::operator=(const ActionMoveDone &) = default;
 ActionMoveDone::ActionMoveDone(ActionMoveDone &&) = default;
 ActionMoveDone& ActionMoveDone::operator=(ActionMoveDone&&) = default;
 
-std::string ActionMoveDone::getBoardField() const
+const Move &ActionMoveDone::getMove() const
 {
-    return boardField;
-}
-
-PlayerColor ActionMoveDone::getPlayerColor() const
-{
-    return color;
+    return move;
 }
 
 } // namespace model

@@ -24,17 +24,8 @@ ComputerPlayer::~ComputerPlayer() = default;
 void ComputerPlayer::makeMove(GameState& state)
 {
     aiAlg->makeMove(state);
-    // TODO send proper gui update
-
-//    std::cout << __FUNCTION__ << std::endl;
-//    auto req = std::make_unique<ActionInputReq>();
-//    gameManager.putAction(std::move(req));
-//    std::string boardField = gameManager.getInput();
-
-//    // TODO handle invalid input
-//    state.putChecker(boardField, color);
-//    auto action = std::make_unique<ActionMoveDone>(boardField, color);
-//    gameManager.putAction(std::move(action));
+    auto action = std::make_unique<ActionMoveDone>(state.getLastMove());
+    gameManager.putAction(std::move(action));
 }
 
 void ComputerPlayer::millMove(GameState& /*state*/)

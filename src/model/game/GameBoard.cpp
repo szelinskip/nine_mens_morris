@@ -171,6 +171,11 @@ std::vector<std::string> GameBoard::getFreeNeighbours(const std::string &field) 
     return freeNeighbours;
 }
 
+const Move &GameBoard::getLastMove() const
+{
+    return lastMove;
+}
+
 std::string GameBoard::getStrRepr() const
 {
     const std::string spacing = "   ";

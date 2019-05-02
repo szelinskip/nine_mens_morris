@@ -5,6 +5,7 @@
 
 #include <src/model/communication/Action.hpp>
 #include <src/view/CheckerType.hpp>
+#include <src/model/game/Move.hpp>
 
 using namespace model;
 
@@ -29,7 +30,7 @@ public:
     MasterController& operator=(MasterController&&) = delete;
 
     void userInputField(const std::string& boardField);
-    void updateUI(const std::string& boardField, PlayerColor checker);
+    void updateUI(const Move& move);
     void startGame();
     void goingDead();
 

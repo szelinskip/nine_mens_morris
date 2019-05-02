@@ -48,6 +48,9 @@ public:
 
     bool lastMoveCreatedMill() const;
     int getLeftCheckersOnBoard(const PlayerColor who) const;
+    const Move& getLastMove() const;
+    bool isInFirstStage(const PlayerColor who) const;
+    void applyMove(const Move& move);
 
     std::string getStrRepr() const;
 

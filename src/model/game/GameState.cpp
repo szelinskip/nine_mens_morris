@@ -70,7 +70,7 @@ GameState& GameState::operator=(GameState&&) = default;
 
 bool GameState::isGameOverState() const
 {
-    if(whiteLeftCheckersOnBoard < 3 || blackLeftCheckersOnBoard < 3)
+    if((whiteLeftCheckersOnBoard < 3 || blackLeftCheckersOnBoard < 3) && whiteLeftCheckersToPut == 0 && blackLeftCheckersToPut == 0)
         return true;
     return false;
 }
@@ -163,6 +163,64 @@ int GameState::getLeftCheckersOnBoard(const PlayerColor who) const
     else // who == PlayerColor::Black
     {
         return static_cast<int>(blackLeftCheckersOnBoard);
+    }
+}
+
+const Move &GameState::getLastMove() const
+{
+    return board.getLastMove();
+}
+
+bool GameState::isInFirstStage(const PlayerColor who) const
+{
+    if(who == PlayerColor::White)
+    {
+        return whiteLeftCheckersToPut > 0u;
+    }
+    else // who == PlayerColor::Black
+    {
+        return blackLeftCheckersToPut > 0u;
+    }
+}
+
+void GameState::applyMove(const Move& move)
+{
+    if(move.fromField.empty())  // first stage move
+    {
+        if(!move.toField.empty())
+        {
+            if(move.who == PlayerColor::White)
+            {
+                whiteLeftCheckersToPut--;
+                whiteLeftCheckersOnBoard++;
+            }
+            else // who == PlayerColor::Black
+            {
+                blackLeftCheckersToPut--;
+                blackLeftCheckersOnBoard++;
+            }
+            board.setColorOnField(move.toField, move.who);
+        }
+    }
+    else  // regular checker move
+    {
+        if(!move.toField.empty())
+        {
+            board.moveChecker(move.fromField, move.toField);
+        }
+    }
+    // oponent checker taken cause of mill
+    if(!move.fieldOponentsCheckerTaken.empty())
+    {
+        if(move.who == PlayerColor::White)
+        {
+            blackLeftCheckersOnBoard--;
+        }
+        else // who == PlayerColor::Black
+        {
+            whiteLeftCheckersOnBoard--;
+        }
+        board.setColorOnField(move.fieldOponentsCheckerTaken, PlayerColor::None);
     }
 }
 

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "ActionType.hpp"
+#include <src/model/game/GameBoard.hpp>
 #include <src/model/game/player/PlayerColor.hpp>
 
 namespace model {
@@ -38,7 +39,7 @@ public:
     ActionInputProvided(ActionInputProvided&&);
     ActionInputProvided& operator=(ActionInputProvided&&);
 
-    std::string getBoardField() const;
+    const std::string& getBoardField() const;
 
 private:
     std::string boardField;
@@ -47,7 +48,7 @@ private:
 class ActionInputReq : public Action
 {
 public:
-    ActionInputReq();
+    ActionInputReq(const bool firstStage, const bool millMove);
 
     virtual ~ActionInputReq();
 
@@ -55,6 +56,12 @@ public:
     ActionInputReq& operator=(const ActionInputReq&);
     ActionInputReq(ActionInputReq&&);
     ActionInputReq& operator=(ActionInputReq&&);
+
+    bool isFirstStage() const;
+    bool isMillMove() const;
+private:
+    bool firstStage;
+    bool millMove;
 };
 
 class ActionGameStart : public Action
@@ -73,7 +80,7 @@ public:
 class ActionMoveDone : public Action
 {
 public:
-    ActionMoveDone(const std::string& boardField, const PlayerColor color);
+    ActionMoveDone(const Move& move);
 
     virtual ~ActionMoveDone();
 
@@ -83,12 +90,10 @@ public:
     ActionMoveDone(ActionMoveDone&&);
     ActionMoveDone& operator=(ActionMoveDone&&);
 
-    std::string getBoardField() const;
-    PlayerColor getPlayerColor() const;
+    const Move& getMove() const;
 
 private:
-    std::string boardField;
-    PlayerColor color;
+    Move move;
 };
 
 } // namespace model

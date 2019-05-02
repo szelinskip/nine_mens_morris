@@ -50,7 +50,7 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
         for(auto& possibleState : possibleStates)
         {
-            int eval = minMax(possibleState, depth + 1, false);
+            int eval = minMax(possibleState, currentDepth + 1, false);
             maxEval = std::max(maxEval, eval);
         }
         return maxEval;
@@ -61,7 +61,7 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
         for(auto& possibleState : possibleStates)
         {
-            int eval = minMax(possibleState, depth + 1, true);
+            int eval = minMax(possibleState, currentDepth + 1, true);
             minEval = std::min(minEval, eval);
         }
         return minEval;
