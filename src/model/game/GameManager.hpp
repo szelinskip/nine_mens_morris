@@ -8,6 +8,7 @@
 #include <queue>
 
 #include <src/model/communication/Action.hpp>
+#include <src/tools/logging/Logger.hpp>
 #include "NineMensMorris.hpp"
 
 namespace controller {
@@ -21,9 +22,10 @@ using ActionPtr = std::unique_ptr<Action>;
 class GameManager
 {
 public:
-    GameManager();
+    GameManager(tools::Logger& logger);
     ~GameManager();
 
+    GameManager() = delete;
     GameManager(const GameManager&) = delete;
     GameManager& operator=(const GameManager&) = delete;
     GameManager(GameManager&&) = delete;
@@ -70,6 +72,8 @@ private:
     std::vector<std::string> boardFieldInputs;
 
     std::atomic<bool> shouldTerminate;
+
+    tools::Logger& logger;
 };
 
 }

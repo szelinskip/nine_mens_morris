@@ -11,13 +11,14 @@
 
 namespace model {
 
-GameManager::GameManager()
+GameManager::GameManager(tools::Logger& logger)
     : gameRunning(false)
     , shouldRunLoop(false)
     , waitingForInput(0)
     , inputProvided(false)
     , millMoveInputAwaiting(false)
     , shouldTerminate(false)
+    , logger(logger)
 {
 }
 

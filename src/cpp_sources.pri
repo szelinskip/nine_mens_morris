@@ -26,6 +26,11 @@ SOURCES += \
         $$PWD/view/MainWindow.cpp \
         $$PWD/view/StyleProvider.cpp \
         \
+        $$PWD/tools/logging/Logger.cpp \
+        $$PWD/tools/logging/LoggingPolicy.cpp \
+        $$PWD/tools/logging/FileLoggingPolicy.cpp \
+        $$PWD/tools/logging/ConsoleLoggingPolicy.cpp \
+        \
         $$PWD/main.cpp
 
 HEADERS += \
@@ -54,6 +59,11 @@ HEADERS += \
         $$PWD/model/game/player/ai/EvalFnLeftCheckersDiff.hpp \
         $$PWD/model/game/player/ai/EvalFnGenericLambda.hpp \
         $$PWD/model/game/player/ai/MinMaxAlg.hpp \
+        \
+        $$PWD/tools/logging/Logger.hpp \
+        $$PWD/tools/logging/LoggingPolicy.hpp \
+        $$PWD/tools/logging/FileLoggingPolicy.hpp \
+        $$PWD/tools/logging/ConsoleLoggingPolicy.hpp \
         \
         $$PWD/view/MainWindow.h \
         $$PWD/view/StyleProvider.hpp \

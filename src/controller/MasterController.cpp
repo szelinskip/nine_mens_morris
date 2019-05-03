@@ -4,13 +4,12 @@
 
 #include <QMetaObject>
 
-#include <iostream>
-
 namespace controller {
 
-MasterController::MasterController(MainWindow* mainWindow, GameManager* gameManager)
+MasterController::MasterController(MainWindow* mainWindow, GameManager* gameManager, tools::Logger& logger)
     : mainWindow(mainWindow)
     , gameManager(gameManager)
+    , logger(logger)
 {
     mainWindow->setController(this);
     gameManager->setController(this);
@@ -22,7 +21,7 @@ MasterController::~MasterController() = default;
 void MasterController::userInputField(const std::string& boardField)
 {
     // TODO
-    std::cout << __FUNCTION__ << " boardfield: " << boardField << std::endl;
+    logger.log("%s(): boardfield: %s", __FUNCTION__, boardField.c_str());
     auto action = std::make_unique<ActionInputProvided>(boardField);
     gameManager->putAction(std::move(action));
 }
@@ -44,7 +43,7 @@ CheckerType MasterController::convertColor(PlayerColor color) const
 
 void MasterController::updateUI(const Move& move)
 {
-    std::cout << __FUNCTION__ << " move from: " << move.fromField << " to: " << move.toField <<  std::endl;
+    logger.log("%s(): move from: %s to: %s, oponent checker taken: %s", __FUNCTION__, move.fromField.c_str(), move.toField.c_str(), move.fieldOponentsCheckerTaken.c_str());
     CheckerType checker = convertColor(move.who);
 
     if(!move.fromField.empty())  // NOT first stage
@@ -64,7 +63,7 @@ void MasterController::updateUI(const Move& move)
 
 void MasterController::startGame()
 {
-    std::cout << "controller " << __FUNCTION__ << std::endl;
+    logger.log("%s(): ", __FUNCTION__);
     auto action = std::make_unique<ActionGameStart>();
     gameManager->putAction(std::move(action));
 }

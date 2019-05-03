@@ -6,6 +6,7 @@
 #include <src/model/communication/Action.hpp>
 #include <src/view/CheckerType.hpp>
 #include <src/model/game/Move.hpp>
+#include <src/tools/logging/Logger.hpp>
 
 using namespace model;
 
@@ -20,7 +21,7 @@ namespace controller {
 class MasterController
 {
 public:
-    MasterController(MainWindow* mainWindow, GameManager* gameManager);
+    MasterController(MainWindow* mainWindow, GameManager* gameManager, tools::Logger& logger);
     ~MasterController();
 
     MasterController() = delete;
@@ -39,6 +40,8 @@ private:
 
     MainWindow* mainWindow;
     GameManager* gameManager;
+
+    tools::Logger& logger;
 };
 
 } // namespace controller
