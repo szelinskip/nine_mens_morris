@@ -32,6 +32,7 @@ public:
     std::vector<std::string> getCheckersWithColor(const PlayerColor color) const;
     bool isCheckerInMill(const std::string& field) const;
     std::vector<std::string> getFreeNeighbours(const std::string& field) const;
+    bool areNeighbours(const std::string& field1, const std::string& field2) const;
 
     const Move& getLastMove() const;
 

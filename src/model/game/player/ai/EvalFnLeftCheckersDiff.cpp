@@ -5,7 +5,7 @@ namespace ai {
 
 int EvalFnLeftCheckersDiff::evalGameState(const model::GameState &gameState, const model::PlayerColor who)
 {
-    return gameState.getLeftCheckersOnBoard(who) - gameState.getLeftCheckersOnBoard(getOponent(who));
+    return 2 * gameState.getLeftCheckersOnBoard(who) - 3 * gameState.getLeftCheckersOnBoard(getOponent(who));
 }
 
 } // namespace ai

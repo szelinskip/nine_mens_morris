@@ -4,6 +4,8 @@
 
 #include <src/model/game/GameState.hpp>
 
+#include <iostream>
+
 namespace model {
 namespace ai {
 
@@ -27,6 +29,13 @@ void MinMaxAlg::makeMove(GameState& gameState)
     int maxEval = std::numeric_limits<int>::min();
     uint32_t index = 0;
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
+//    std::cout << "Possible states (" << possibleStates.size() << ") at depth 0 from base state: " << std::endl;
+//    std::cout << gameState.getStrRepr() << std::endl;
+//    for(auto i = 0u; i < possibleStates.size(); i++)
+//    {
+//        std::cout << "num: " << (i+1) << std::endl;
+//        std::cout << possibleStates[i].getStrRepr() << std::endl;
+//    }
     for(auto i = 0u; i < possibleStates.size(); i++)
     {
         int eval = minMax(possibleStates[i], 1, false);
@@ -48,6 +57,13 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
     {
         int maxEval = std::numeric_limits<int>::min();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
+//        std::cout << "Possible states (" << possibleStates.size() << ") at depth " << currentDepth << " from base state: " << std::endl;
+//        std::cout << gameState.getStrRepr() << std::endl;
+//        for(auto i = 0u; i < possibleStates.size(); i++)
+//        {
+//            std::cout << "num: " << (i+1) << std::endl;
+//            std::cout << possibleStates[i].getStrRepr() << std::endl;
+//        }
         for(auto& possibleState : possibleStates)
         {
             int eval = minMax(possibleState, currentDepth + 1, false);
@@ -59,6 +75,13 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
     {
         int minEval = std::numeric_limits<int>::max();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
+//        std::cout << "Possible states (" << possibleStates.size() << ") at depth " << currentDepth << " from base state: " << std::endl;
+//        std::cout << gameState.getStrRepr() << std::endl;
+//        for(auto i = 0u; i < possibleStates.size(); i++)
+//        {
+//            std::cout << "num: " << (i+1) << std::endl;
+//            std::cout << possibleStates[i].getStrRepr() << std::endl;
+//        }
         for(auto& possibleState : possibleStates)
         {
             int eval = minMax(possibleState, currentDepth + 1, true);

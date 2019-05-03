@@ -107,6 +107,7 @@ void GameBoard::setColorOnField(const std::string& position, const PlayerColor c
     else
         lastMove = {"", position, color, ""};
     boardBase[position].colorOnField = color;
+    boardBase[position].position = position;
 }
 
 void GameBoard::moveChecker(const std::string &checkerOldPos, const std::string &checkerNewPos)
@@ -158,7 +159,10 @@ std::vector<std::string> GameBoard::getFreeNeighbours(const std::string &field) 
         if(fieldInRow == fieldPtr)
             continue;
         if(fieldInRow->colorOnField == PlayerColor::None)
-            freeNeighbours.push_back(fieldInRow->position);
+        {
+            if(areNeighbours(field, fieldInRow->position))
+                freeNeighbours.push_back(fieldInRow->position);
+        }
     }
     const auto& fieldsInColumn = fieldPtr->columnFieldLies->fieldsInColumn;
     for(const auto& fieldInColumn : fieldsInColumn)
@@ -166,9 +170,56 @@ std::vector<std::string> GameBoard::getFreeNeighbours(const std::string &field) 
         if(fieldInColumn == fieldPtr)
             continue;
         if(fieldInColumn->colorOnField == PlayerColor::None)
-            freeNeighbours.push_back(fieldInColumn->position);
+        {
+            if(areNeighbours(field, fieldInColumn->position))
+                freeNeighbours.push_back(fieldInColumn->position);
+        }
     }
     return freeNeighbours;
+}
+
+bool GameBoard::areNeighbours(const std::string& field1, const std::string& field2) const
+{
+    int row1 = std::stoi(field1.substr(0, 1));
+    int row2 = std::stoi(field2.substr(0, 1));
+    char column1 = field1[1];
+    char column2 = field2[1];
+    if(row1 == row2)
+    {
+        if((row1 == 1 && row2 == 1) || (row1 == 7 && row2 == 7))
+        {
+            return std::abs(column1 - column2) == 3;
+        }
+        else if((row1 == 2 && row2 == 2) || (row1 == 6 && row2 == 6))
+        {
+            return std::abs(column1 - column2) == 2;
+        }
+        else if((row1 == 3 && row2 == 3) || (row1 == 4 && row2 == 4) || (row1 == 5 && row2 == 5))
+        {
+            return std::abs(column1 - column2) == 1;
+        }
+        else
+            return false;
+    }
+    else if(column1 == column2)
+    {
+        if((column1 == 'a' && column2 == 'a') || (column1 == 'g' && column2 == 'g'))
+        {
+            return std::abs(row1 - row2) == 3;
+        }
+        else if((column1 == 'b' && column2 == 'b') || (column1 == 'f' && column2 == 'f'))
+        {
+            return std::abs(row1 - row2) == 2;
+        }
+        else if((column1 == 'c' && column2 == 'c') || (column1 == 'd' && column2 == 'd') || (column1 == 'e' && column2 == 'e'))
+        {
+            return std::abs(row1 - row2) == 1;
+        }
+        else
+            return false;
+    }
+    else
+        return false;
 }
 
 const Move &GameBoard::getLastMove() const

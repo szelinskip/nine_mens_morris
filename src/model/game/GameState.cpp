@@ -352,13 +352,13 @@ std::vector<GameState> GameState::getStatesAfterMillFormed(const GameState& mill
     uint8_t blackLeftCheckersOnBoard;
     if(who == PlayerColor::White)
     {
-        whiteLeftCheckersOnBoard = this->whiteLeftCheckersOnBoard;
-        blackLeftCheckersOnBoard = this->blackLeftCheckersOnBoard - 1;
+        whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard;
+        blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard - 1;
     }
     else
     {
-        whiteLeftCheckersOnBoard = this->whiteLeftCheckersOnBoard - 1;
-        blackLeftCheckersOnBoard = this->blackLeftCheckersOnBoard;
+        whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard - 1;
+        blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard;
     }
     for(const auto& checker : *checkersPossibleToTake)
     {
