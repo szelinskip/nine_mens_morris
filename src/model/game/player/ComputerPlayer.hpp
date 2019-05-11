@@ -26,8 +26,8 @@ public:
     ComputerPlayer(ComputerPlayer&&) = delete;
     ComputerPlayer& operator=(ComputerPlayer&&) = delete;
 
-    virtual void makeMove(GameState& state) override;
-    virtual void millMove(GameState& state) override;
+    virtual bool makeMove(GameState& state) override;
+    virtual bool millMove(GameState& state) override;
 
 private:
     std::unique_ptr<ai::AiAlgorithm> aiAlg;

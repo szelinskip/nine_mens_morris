@@ -21,16 +21,18 @@ ComputerPlayer::ComputerPlayer(GameManager& gameManager,
 
 ComputerPlayer::~ComputerPlayer() = default;
 
-void ComputerPlayer::makeMove(GameState& state)
+bool ComputerPlayer::makeMove(GameState& state)
 {
     aiAlg->makeMove(state);
     auto action = std::make_unique<ActionMoveDone>(state.getLastMove());
     gameManager.putAction(std::move(action));
+    return true;
 }
 
-void ComputerPlayer::millMove(GameState& /*state*/)
+bool ComputerPlayer::millMove(GameState& /*state*/)
 {
     // nothing to do, potential mill move would had been done in makeMove()
+    return true;
 }
 
 } // namespace model

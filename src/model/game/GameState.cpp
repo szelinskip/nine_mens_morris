@@ -149,6 +149,36 @@ void GameState::setBlackCheckersKilledByWhite(const uint8_t blackCheckersKilledB
     this->blackCheckersKilledByWhite = blackCheckersKilledByWhite;
 }
 
+uint32_t GameState::getWhiteLeftCheckersToPut() const
+{
+    return static_cast<uint32_t>(whiteLeftCheckersToPut);
+}
+
+uint32_t GameState::getBlackLeftCheckersToPut() const
+{
+    return static_cast<uint32_t>(blackLeftCheckersToPut);
+}
+
+uint32_t GameState::getWhiteLeftCheckersOnBoard() const
+{
+    return static_cast<uint32_t>(whiteLeftCheckersOnBoard);
+}
+
+uint32_t GameState::getBlackLeftCheckersOnBoard() const
+{
+    return static_cast<uint32_t>(blackLeftCheckersOnBoard);
+}
+
+uint32_t GameState::getWhiteCheckersKilledByBlack() const
+{
+    return static_cast<uint32_t>(whiteCheckersKilledByBlack);
+}
+
+uint32_t GameState::getBlackCheckersKilledByWhite() const
+{
+    return static_cast<uint32_t>(blackCheckersKilledByWhite);
+}
+
 bool GameState::lastMoveCreatedMill() const
 {
     return board.lastMoveFormedMill();

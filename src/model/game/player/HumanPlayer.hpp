@@ -20,8 +20,8 @@ public:
     HumanPlayer(HumanPlayer&&) = delete;
     HumanPlayer& operator=(HumanPlayer&&) = delete;
 
-    virtual void makeMove(GameState& state) override;
-    virtual void millMove(GameState& state) override;
+    virtual bool makeMove(GameState& state) override;
+    virtual bool millMove(GameState& state) override;
 };
 
 } // namespace model

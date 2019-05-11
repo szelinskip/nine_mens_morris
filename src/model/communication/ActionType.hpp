@@ -9,8 +9,13 @@ enum class ActionType : uint8_t
     InputProvided,
     InputReq,
     InputResp,
-    GameStart,
     MoveDone,
+    GameStart,
+    GameStop,
+    GamePause,
+    GameResume,
+    GuiOn,
+    GuiOff,
 };
 
 } // namespace model

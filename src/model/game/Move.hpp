@@ -13,6 +13,11 @@ struct Move
     PlayerColor who;
 
     std::string fieldOponentsCheckerTaken;
+
+    bool isEmpty() const
+    {
+        return fromField.empty() && toField.empty() && fieldOponentsCheckerTaken.empty();
+    }
 };
 
 } // namespace model

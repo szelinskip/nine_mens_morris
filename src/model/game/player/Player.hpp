@@ -23,8 +23,8 @@ public:
     Player(Player&&) = delete;
     Player& operator=(Player&&) = delete;
 
-    virtual void makeMove(GameState& state) = 0;
-    virtual void millMove(GameState& state) = 0;
+    virtual bool makeMove(GameState& state) = 0;
+    virtual bool millMove(GameState& state) = 0;
     virtual std::string getName() const;
     virtual PlayerColor getColor() const;
 

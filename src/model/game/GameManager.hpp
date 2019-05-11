@@ -35,20 +35,43 @@ public:
 
     void run();
     void stop();
-    bool shouldStop() const;
+    bool shouldStopGame() const;
 
     void putAction(ActionPtr action);
     Move getInput();
 
+    void beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
+                           const uint32_t blackLeftCheckersToPut,
+                           const uint32_t whiteLeftCheckersOnBoard,
+                           const uint32_t blackLeftCheckersOnBoard,
+                           const uint32_t whiteCheckersKilledByBlack,
+                           const uint32_t blackCheckersKilledByWhite);
+    void afterTurnActions(std::chrono::milliseconds elapsed, const Move& lastMove);
+    void playersTurnAction(const Player* currentPlayer);
+    void gameFinishedActions(const Player* winner);
+
 private:
     void runningLoop();
-    void runGame();
+    void runGame(const PlayerType whitePlayerType,
+                 const PlayerHeuristic whitePlayerHeuristic,
+                 const uint32_t whitePlayerDepth,
+                 const PlayerType blackPlayerType,
+                 const PlayerHeuristic blackPlayerHeuristic,
+                 const uint32_t blackPlayerDepth);
     void handleAction(ActionPtr action);
     void handleInputReq(ActionPtr action);
     void handleInputProvided(ActionPtr action);
-    void handleGameStart();
+    void handleGameStart(ActionPtr action);
+    void handleGameStop();
+    void handleGamePause();
+    void handleGameResume();
     void handleActionMoveDone(ActionPtr action);
+    void handleGuiOff();
+    void handleGuiOn();
     Move buildInputMove();
+    void resetGameManager();
+
+    const std::chrono::milliseconds pauseBetweenPlayers;
 
     controller::MasterController* controller;
 
@@ -72,6 +95,13 @@ private:
     std::vector<std::string> boardFieldInputs;
 
     std::atomic<bool> shouldTerminate;
+    std::atomic<bool> shouldStop;
+
+    std::atomic<bool> shouldPause;
+    std::mutex pauseMutex;
+    std::condition_variable pauseCondition;
+
+    std::atomic<bool> shouldUpdateUi;
 
     tools::Logger& logger;
 };

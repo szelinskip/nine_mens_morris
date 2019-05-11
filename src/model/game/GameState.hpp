@@ -46,6 +46,13 @@ public:
     void setWhiteCheckersKilledByBlack(const uint8_t whiteCheckersKilledByBlack);
     void setBlackCheckersKilledByWhite(const uint8_t blackCheckersKilledByWhite);
 
+    uint32_t getWhiteLeftCheckersToPut() const;
+    uint32_t getBlackLeftCheckersToPut() const;
+    uint32_t getWhiteLeftCheckersOnBoard() const;
+    uint32_t getBlackLeftCheckersOnBoard() const;
+    uint32_t getWhiteCheckersKilledByBlack() const;
+    uint32_t getBlackCheckersKilledByWhite() const;
+
     bool lastMoveCreatedMill() const;
     int getLeftCheckersOnBoard(const PlayerColor who) const;
     const Move& getLastMove() const;

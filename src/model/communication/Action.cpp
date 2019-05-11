@@ -60,17 +60,6 @@ ActionInputReq& ActionInputReq::operator=(const ActionInputReq &) = default;
 ActionInputReq::ActionInputReq(ActionInputReq &&) = default;
 ActionInputReq& ActionInputReq::operator=(ActionInputReq&&) = default;
 
-ActionGameStart::ActionGameStart()
-    : Action(ActionType::GameStart)
-{
-}
-
-ActionGameStart::~ActionGameStart() = default;
-ActionGameStart::ActionGameStart(const ActionGameStart &) = default;
-ActionGameStart& ActionGameStart::operator=(const ActionGameStart &) = default;
-ActionGameStart::ActionGameStart(ActionGameStart &&) = default;
-ActionGameStart& ActionGameStart::operator=(ActionGameStart&&) = default;
-
 ActionMoveDone::ActionMoveDone(const Move& move)
     : Action(ActionType::MoveDone)
     , move(move)
@@ -87,5 +76,82 @@ const Move &ActionMoveDone::getMove() const
 {
     return move;
 }
+
+ActionGameStart::ActionGameStart(const PlayerType whitePlayerType,
+                                 const PlayerHeuristic whitePlayerHeuristic,
+                                 const uint32_t whitePlayerDepth,
+                                 const PlayerType blackPlayerType,
+                                 const PlayerHeuristic blackPlayerHeuristic,
+                                 const uint32_t blackPlayerDepth)
+    : Action(ActionType::GameStart)
+    , whitePlayerType(whitePlayerType)
+    , whitePlayerHeuristic(whitePlayerHeuristic)
+    , whitePlayerDepth(whitePlayerDepth)
+    , blackPlayerType(blackPlayerType)
+    , blackPlayerHeuristic(blackPlayerHeuristic)
+    , blackPlayerDepth(blackPlayerDepth)
+{
+}
+
+ActionGameStart::~ActionGameStart() = default;
+ActionGameStart::ActionGameStart(const ActionGameStart &) = default;
+ActionGameStart& ActionGameStart::operator=(const ActionGameStart &) = default;
+ActionGameStart::ActionGameStart(ActionGameStart &&) = default;
+ActionGameStart& ActionGameStart::operator=(ActionGameStart&&) = default;
+
+ActionGameStop::ActionGameStop()
+    : Action(ActionType::GameStop)
+{
+}
+
+ActionGameStop::~ActionGameStop() = default;
+ActionGameStop::ActionGameStop(const ActionGameStop &) = default;
+ActionGameStop& ActionGameStop::operator=(const ActionGameStop &) = default;
+ActionGameStop::ActionGameStop(ActionGameStop &&) = default;
+ActionGameStop& ActionGameStop::operator=(ActionGameStop&&) = default;
+
+ActionGamePause::ActionGamePause()
+    : Action(ActionType::GamePause)
+{
+}
+
+ActionGamePause::~ActionGamePause() = default;
+ActionGamePause::ActionGamePause(const ActionGamePause &) = default;
+ActionGamePause& ActionGamePause::operator=(const ActionGamePause &) = default;
+ActionGamePause::ActionGamePause(ActionGamePause &&) = default;
+ActionGamePause& ActionGamePause::operator=(ActionGamePause&&) = default;
+
+ActionGameResume::ActionGameResume()
+    : Action(ActionType::GameResume)
+{
+}
+
+ActionGameResume::~ActionGameResume() = default;
+ActionGameResume::ActionGameResume(const ActionGameResume &) = default;
+ActionGameResume& ActionGameResume::operator=(const ActionGameResume &) = default;
+ActionGameResume::ActionGameResume(ActionGameResume &&) = default;
+ActionGameResume& ActionGameResume::operator=(ActionGameResume&&) = default;
+
+ActionGuiOn::ActionGuiOn()
+    : Action(ActionType::GuiOn)
+{
+}
+
+ActionGuiOn::~ActionGuiOn() = default;
+ActionGuiOn::ActionGuiOn(const ActionGuiOn &) = default;
+ActionGuiOn& ActionGuiOn::operator=(const ActionGuiOn &) = default;
+ActionGuiOn::ActionGuiOn(ActionGuiOn &&) = default;
+ActionGuiOn& ActionGuiOn::operator=(ActionGuiOn&&) = default;
+
+ActionGuiOff::ActionGuiOff()
+    : Action(ActionType::GuiOff)
+{
+}
+
+ActionGuiOff::~ActionGuiOff() = default;
+ActionGuiOff::ActionGuiOff(const ActionGuiOff &) = default;
+ActionGuiOff& ActionGuiOff::operator=(const ActionGuiOff &) = default;
+ActionGuiOff::ActionGuiOff(ActionGuiOff &&) = default;
+ActionGuiOff& ActionGuiOff::operator=(ActionGuiOff&&) = default;
 
 } // namespace model

@@ -5,6 +5,7 @@
 #include "ActionType.hpp"
 #include <src/model/game/GameBoard.hpp>
 #include <src/model/game/player/PlayerColor.hpp>
+#include <src/model/game/player/PlayerInfo.hpp>
 
 namespace model {
 
@@ -64,19 +65,6 @@ private:
     bool millMove;
 };
 
-class ActionGameStart : public Action
-{
-public:
-    ActionGameStart();
-
-    virtual ~ActionGameStart();
-
-    ActionGameStart(const ActionGameStart&);
-    ActionGameStart& operator=(const ActionGameStart&);
-    ActionGameStart(ActionGameStart&&);
-    ActionGameStart& operator=(ActionGameStart&&);
-};
-
 class ActionMoveDone : public Action
 {
 public:
@@ -94,6 +82,97 @@ public:
 
 private:
     Move move;
+};
+
+class ActionGameStart : public Action
+{
+public:
+    ActionGameStart(const PlayerType whitePlayerType,
+                    const PlayerHeuristic whitePlayerHeuristic,
+                    const uint32_t whitePlayerDepth,
+                    const PlayerType blackPlayerType,
+                    const PlayerHeuristic blackPlayerHeuristic,
+                    const uint32_t blackPlayerDepth);
+
+    virtual ~ActionGameStart();
+
+    ActionGameStart(const ActionGameStart&);
+    ActionGameStart& operator=(const ActionGameStart&);
+    ActionGameStart(ActionGameStart&&);
+    ActionGameStart& operator=(ActionGameStart&&);
+
+    PlayerType whitePlayerType;
+    PlayerHeuristic whitePlayerHeuristic;
+    uint32_t whitePlayerDepth;
+
+    PlayerType blackPlayerType;
+    PlayerHeuristic blackPlayerHeuristic;
+    uint32_t blackPlayerDepth;
+};
+
+class ActionGameStop : public Action
+{
+public:
+    ActionGameStop();
+
+    virtual ~ActionGameStop();
+
+    ActionGameStop(const ActionGameStop&);
+    ActionGameStop& operator=(const ActionGameStop&);
+    ActionGameStop(ActionGameStop&&);
+    ActionGameStop& operator=(ActionGameStop&&);
+};
+
+class ActionGamePause : public Action
+{
+public:
+    ActionGamePause();
+
+    virtual ~ActionGamePause();
+
+    ActionGamePause(const ActionGamePause&);
+    ActionGamePause& operator=(const ActionGamePause&);
+    ActionGamePause(ActionGamePause&&);
+    ActionGamePause& operator=(ActionGamePause&&);
+};
+
+class ActionGameResume : public Action
+{
+public:
+    ActionGameResume();
+
+    virtual ~ActionGameResume();
+
+    ActionGameResume(const ActionGameResume&);
+    ActionGameResume& operator=(const ActionGameResume&);
+    ActionGameResume(ActionGameResume&&);
+    ActionGameResume& operator=(ActionGameResume&&);
+};
+
+class ActionGuiOn : public Action
+{
+public:
+    ActionGuiOn();
+
+    virtual ~ActionGuiOn();
+
+    ActionGuiOn(const ActionGuiOn&);
+    ActionGuiOn& operator=(const ActionGuiOn&);
+    ActionGuiOn(ActionGuiOn&&);
+    ActionGuiOn& operator=(ActionGuiOn&&);
+};
+
+class ActionGuiOff : public Action
+{
+public:
+    ActionGuiOff();
+
+    virtual ~ActionGuiOff();
+
+    ActionGuiOff(const ActionGuiOff&);
+    ActionGuiOff& operator=(const ActionGuiOff&);
+    ActionGuiOff(ActionGuiOff&&);
+    ActionGuiOff& operator=(ActionGuiOff&&);
 };
 
 } // namespace model

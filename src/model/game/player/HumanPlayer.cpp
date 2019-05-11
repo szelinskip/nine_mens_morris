@@ -18,7 +18,7 @@ HumanPlayer::HumanPlayer(GameManager& gameManager, const std::string& name, Play
 
 HumanPlayer::~HumanPlayer() = default;
 
-void HumanPlayer::makeMove(GameState& state)
+bool HumanPlayer::makeMove(GameState& state)
 {
     std::cout << __FUNCTION__ << std::endl;
     auto req = std::make_unique<ActionInputReq>(state.isInFirstStage(color), false);
@@ -27,12 +27,15 @@ void HumanPlayer::makeMove(GameState& state)
     move.who = color;
 
     // TODO handle invalid input
+    if(move.isEmpty())
+        return false;
     state.applyMove(move);
     auto action = std::make_unique<ActionMoveDone>(move);
     gameManager.putAction(std::move(action));
+    return true;
 }
 
-void HumanPlayer::millMove(GameState& state)
+bool HumanPlayer::millMove(GameState& state)
 {
     std::cout << __FUNCTION__ << std::endl;
     auto req = std::make_unique<ActionInputReq>(state.isInFirstStage(color), true);
@@ -40,10 +43,14 @@ void HumanPlayer::millMove(GameState& state)
     Move move = gameManager.getInput();
     move.who = color;
 
+    if(move.isEmpty())
+        return false;
+
     // TODO handle invalid input
     state.applyMove(move);
     auto action = std::make_unique<ActionMoveDone>(move);
     gameManager.putAction(std::move(action));
+    return true;
 }
 
 } // namespace model

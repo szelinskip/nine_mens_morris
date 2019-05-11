@@ -6,13 +6,10 @@
 #include <algorithm>
 #include <iostream>
 
-using namespace std::chrono_literals;
-
 namespace model {
 
 NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager)
-    : pauseBetweenPlayers(1500ms)
-    , whitePlayer(std::move(whitePlayer))
+    : whitePlayer(std::move(whitePlayer))
     , blackPlayer(std::move(blackPlayer))
     , currentPlayer(nullptr)
     , gameManager(gameManager)
@@ -26,17 +23,30 @@ void NineMensMorris::startGame()
     std::cout << __FUNCTION__ << std::endl;
     bool gameOver = false;
     Player* winner = nullptr;
-    while(!gameOver && !gameManager->shouldStop())
+    while(!gameOver && !gameManager->shouldStopGame())
     {
+        gameManager->beforeTurnActions(gameState.getWhiteLeftCheckersToPut(),
+                                       gameState.getBlackLeftCheckersToPut(),
+                                       gameState.getWhiteLeftCheckersOnBoard(),
+                                       gameState.getBlackLeftCheckersOnBoard(),
+                                       gameState.getWhiteCheckersKilledByBlack(),
+                                       gameState.getBlackCheckersKilledByWhite());
+        std::chrono::milliseconds elapsed;
         if(!checkGameOverCondition())
         {
             std::cout << "game over condition FALSE" << std::endl;
             currentPlayer = getCurrentPlayer();
-            currentPlayer->makeMove(gameState);
+            gameManager->playersTurnAction(currentPlayer);
+            std::chrono::time_point startMoveTp = std::chrono::steady_clock::now();
+            bool moveValid = currentPlayer->makeMove(gameState);
+            if(!moveValid)
+                continue;
             if(lastMoveCreatedMill())
             {
-                currentPlayer->millMove(gameState);
+               /* bool millMoveValid = */currentPlayer->millMove(gameState);
             }
+            std::chrono::time_point moveDoneTp = std::chrono::steady_clock::now();
+            elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(moveDoneTp - startMoveTp);
             gameStatesHistory.emplace_back(gameState);
         }
         else
@@ -46,14 +56,9 @@ void NineMensMorris::startGame()
             if(!isGameEndedWithDraw())
                 winner = currentPlayer;
         }
-        std::cout << "sleeping for: 1500 ms" << std::endl;
-        std::this_thread::sleep_for(pauseBetweenPlayers);
-        std::cout << "end sleep" << std::endl;
+        gameManager->afterTurnActions(elapsed, gameState.getLastMove());
     }
-    if(winner != nullptr)
-        std::cout << "winner: " << winner->getName() << std::endl;
-    else
-        std::cout << "draw" << std::endl;
+    gameManager->gameFinishedActions(winner);
 }
 
 bool NineMensMorris::checkGameOverCondition() const

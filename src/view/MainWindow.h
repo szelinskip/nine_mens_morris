@@ -12,6 +12,7 @@
 
 Q_DECLARE_METATYPE(std::string)
 Q_DECLARE_METATYPE(CheckerType)
+Q_DECLARE_METATYPE(uint32_t)
 
 namespace Ui {
 class MainWindow;
@@ -39,12 +40,36 @@ public:
 public slots:
     void boardFieldClicked(QAbstractButton* button);
     void startGameClicked();
+    void stopGameClicked();
+    void pauseGameClicked();
+    void resumeGameClicked();
+    void guiOnOffClicked();
     void setCheckerOnField(const std::string& boardField, CheckerType checker);
+    void resetFieldBackground(const std::string& boardField, CheckerType checker);
+    void updateGameState(const uint32_t whiteLeftCheckersToPut,
+                         const uint32_t blackLeftCheckersToPut,
+                         const uint32_t whiteLeftCheckersOnBoard,
+                         const uint32_t blackLeftCheckersOnBoard,
+                         const uint32_t whiteCheckersKilledByBlack,
+                         const uint32_t blackCheckersKilledByWhite);
+    void updateLastMove(double elapsedSeconds,
+                        const std::string& fromField,
+                        const std::string& toField,
+                        const std::string& fieldOponentsCheckerTaken,
+                        CheckerType who);
+    void resetUI();
+    void updateCurrentPlayer(CheckerType checkerColor);
+    void updateGameFinished(const std::string& winnerName);
+    void updateGameStarted();
+    void updateGamePaused();
+    void updateGameResumed();
+    void updateGameStopped();
 
 private:
     void initialize();
     void connectSingalsFromAllButtonsToSingleSlot();
     std::string getBoardPlaceFromName(const std::string& name) const;
+    void clearLogBox();
 
     Ui::MainWindow* ui;
 

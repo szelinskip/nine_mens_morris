@@ -32,8 +32,32 @@ public:
 
     void userInputField(const std::string& boardField);
     void updateUI(const Move& move);
-    void startGame();
+    void updateUI(const uint32_t whiteLeftCheckersToPut,
+                  const uint32_t blackLeftCheckersToPut,
+                  const uint32_t whiteLeftCheckersOnBoard,
+                  const uint32_t blackLeftCheckersOnBoard,
+                  const uint32_t whiteCheckersKilledByBlack,
+                  const uint32_t blackCheckersKilledByWhite);
+    void resetUI();
+    void updateCurrentPlayer(const PlayerColor color);
+    void updateLastMove(std::chrono::milliseconds elapsed, const Move& lastMove);
+    void gameFinishedStatus(const std::string& winnerName);
+    void startGame(const std::string& whitePlayerTypeStr,
+                   const std::string& whitePlayerHeurisitcStr,
+                   const std::string& whiteTreeDepthStr,
+                   const std::string& blackPlayerTypeStr,
+                   const std::string& blackPlayerHeurisitcStr,
+                   const std::string& blackTreeDepthStr);
+    void stopGame();
+    void pauseGame();
+    void resumeGame();
+    void guiOnOff(const bool isGuiOn);
     void goingDead();
+
+    void gameStarted();
+    void gamePaused();
+    void gameResumed();
+    void gameStopped();
 
 private:
     CheckerType convertColor(PlayerColor color) const;

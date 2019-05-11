@@ -16,12 +16,15 @@ SOURCES += \
         $$PWD/model/game/player/HumanPlayer.cpp \
         $$PWD/model/game/player/ComputerPlayer.cpp \
         $$PWD/model/game/player/PlayerColor.cpp \
+        $$PWD/model/game/player/PlayerInfo.cpp \
+        $$PWD/model/game/player/PlayerFactory.cpp \
         \
         $$PWD/model/game/player/ai/AiAlgorithm.cpp \
         $$PWD/model/game/player/ai/EvalFunction.cpp \
         $$PWD/model/game/player/ai/EvalFnLeftCheckersDiff.cpp \
         $$PWD/model/game/player/ai/EvalFnGenericLambda.cpp \
         $$PWD/model/game/player/ai/MinMaxAlg.cpp \
+        $$PWD/model/game/player/ai/AlphaBetaPrunningAlg.cpp \
         \
         $$PWD/view/MainWindow.cpp \
         $$PWD/view/StyleProvider.cpp \
@@ -53,12 +56,15 @@ HEADERS += \
         $$PWD/model/game/player/HumanPlayer.hpp \
         $$PWD/model/game/player/ComputerPlayer.hpp \
         $$PWD/model/game/player/PlayerColor.hpp \
+        $$PWD/model/game/player/PlayerInfo.hpp \
+        $$PWD/model/game/player/PlayerFactory.hpp \
         \
         $$PWD/model/game/player/ai/AiAlgorithm.hpp \
         $$PWD/model/game/player/ai/EvalFunction.hpp \
         $$PWD/model/game/player/ai/EvalFnLeftCheckersDiff.hpp \
         $$PWD/model/game/player/ai/EvalFnGenericLambda.hpp \
         $$PWD/model/game/player/ai/MinMaxAlg.hpp \
+        $$PWD/model/game/player/ai/AlphaBetaPrunningAlg.hpp \
         \
         $$PWD/tools/logging/Logger.hpp \
         $$PWD/tools/logging/LoggingPolicy.hpp \
