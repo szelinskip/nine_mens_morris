@@ -3,8 +3,10 @@
 namespace model {
 namespace ai {
 
-EvalFnGenericLambda::EvalFnGenericLambda(const std::function<int (const GameState &, const PlayerColor)> &evalFn)
-    : evalFn(evalFn)
+EvalFnGenericLambda::EvalFnGenericLambda(const std::function<int (const GameState &, const PlayerColor)>& evalFn,
+                                         const std::string& info)
+    : EvalFunction(info)
+    , evalFn(evalFn)
 {
 }
 

@@ -33,7 +33,7 @@ std::string FileLoggingPolicy::getNextLogFileFullPath(const fs::path& logsDir, c
     std::transform(logFileNames.cbegin(), logFileNames.cend(), std::back_inserter(logFileNamesSufixes),
                    [](const auto& fileName)
                    {
-                       return std::stoi(fileName.substr(fileName.find("_") + 1, fileName.length()));
+                       return std::stoi(fileName.substr(fileName.rfind("_") + 1, fileName.length()));
                    });
     auto maxSuffixIt = std::max_element(logFileNamesSufixes.cbegin(), logFileNamesSufixes.cend());
 

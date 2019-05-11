@@ -4,8 +4,9 @@
 
 namespace controller {
 
-AppCleaner::AppCleaner(controller::MasterController* controller)
+AppCleaner::AppCleaner(controller::MasterController* controller, tools::Logger& logger)
     : controller(controller)
+    , logger(logger)
 {
 }
 
@@ -13,7 +14,7 @@ AppCleaner::~AppCleaner() = default;
 
 void AppCleaner::handleProperAppQuit()
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     controller->goingDead();
 }
 

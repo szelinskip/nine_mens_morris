@@ -33,6 +33,7 @@ SOURCES += \
         $$PWD/tools/logging/LoggingPolicy.cpp \
         $$PWD/tools/logging/FileLoggingPolicy.cpp \
         $$PWD/tools/logging/ConsoleLoggingPolicy.cpp \
+        $$PWD/tools/logging/GuiLogBoxLoggingPolicy.cpp \
         \
         $$PWD/main.cpp
 
@@ -70,6 +71,7 @@ HEADERS += \
         $$PWD/tools/logging/LoggingPolicy.hpp \
         $$PWD/tools/logging/FileLoggingPolicy.hpp \
         $$PWD/tools/logging/ConsoleLoggingPolicy.hpp \
+        $$PWD/tools/logging/GuiLogBoxLoggingPolicy.cpp \
         \
         $$PWD/view/MainWindow.h \
         $$PWD/view/StyleProvider.hpp \

@@ -6,25 +6,39 @@
 #include <algorithm>
 #include <iostream>
 
+#include <src/tools/logging/FileLoggingPolicy.hpp>
+
 namespace model {
 
-NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager)
+NineMensMorris::NineMensMorris(std::unique_ptr<Player> whitePlayer,
+                               std::unique_ptr<Player> blackPlayer,
+                               GameManager* gameManager,
+                               tools::Logger& logger)
     : whitePlayer(std::move(whitePlayer))
     , blackPlayer(std::move(blackPlayer))
     , currentPlayer(nullptr)
     , gameManager(gameManager)
+    , turnNum(0)
+    , logger(logger)
+    , gameMovesLogger(std::make_unique<tools::FileLoggingPolicy>("game_moves_log", true))
+    , gameStatesLogger(std::make_unique<tools::FileLoggingPolicy>("game_states_log", true))
 {
+    gameMovesLogger.log("%s(): White player info: %s", __FUNCTION__, this->whitePlayer->getInfo().c_str());
+    gameMovesLogger.log("%s(): Black player info: %s", __FUNCTION__, this->blackPlayer->getInfo().c_str());
+    gameStatesLogger.log("%s(): White player info: %s", __FUNCTION__, this->whitePlayer->getInfo().c_str());
+    gameStatesLogger.log("%s(): Black player info: %s", __FUNCTION__, this->blackPlayer->getInfo().c_str());
 }
 
 NineMensMorris::~NineMensMorris() = default;
 
 void NineMensMorris::startGame()
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     bool gameOver = false;
     Player* winner = nullptr;
     while(!gameOver && !gameManager->shouldStopGame())
     {
+        turnNum++;
         gameManager->beforeTurnActions(gameState.getWhiteLeftCheckersToPut(),
                                        gameState.getBlackLeftCheckersToPut(),
                                        gameState.getWhiteLeftCheckersOnBoard(),
@@ -34,7 +48,7 @@ void NineMensMorris::startGame()
         std::chrono::milliseconds elapsed;
         if(!checkGameOverCondition())
         {
-            std::cout << "game over condition FALSE" << std::endl;
+            logger.log("%s(): game over condition FALSE", __FUNCTION__);
             currentPlayer = getCurrentPlayer();
             gameManager->playersTurnAction(currentPlayer);
             std::chrono::time_point startMoveTp = std::chrono::steady_clock::now();
@@ -45,20 +59,42 @@ void NineMensMorris::startGame()
             {
                /* bool millMoveValid = */currentPlayer->millMove(gameState);
             }
+            currentPlayer->incrementMovesNumber();
             std::chrono::time_point moveDoneTp = std::chrono::steady_clock::now();
             elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(moveDoneTp - startMoveTp);
+            const auto& lastMove = gameState.getLastMove();
+            gameMovesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
+                                "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s]",
+                                turnNum,
+                                currentPlayer->getName().c_str(),
+                                currentPlayer->getMovesNumber(),
+                                lastMove.fromField.c_str(),
+                                lastMove.toField.c_str(),
+                                lastMove.fieldOponentsCheckerTaken.c_str(),
+                                elapsed.count() / 1000.0);
+            gameStatesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
+                                 "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], game state:\n%s",
+                                 turnNum,
+                                 currentPlayer->getName().c_str(),
+                                 currentPlayer->getMovesNumber(),
+                                 lastMove.fromField.c_str(),
+                                 lastMove.toField.c_str(),
+                                 lastMove.fieldOponentsCheckerTaken.c_str(),
+                                 elapsed.count() / 1000.0,
+                                 gameState.getStrRepr().c_str());
             gameStatesHistory.emplace_back(gameState);
         }
         else
         {
-            std::cout << "game over condition TRUE" << std::endl;
+            logger.log("%s(): game over condition TRUE", __FUNCTION__);
             gameOver = true;
             if(!isGameEndedWithDraw())
                 winner = currentPlayer;
         }
         gameManager->afterTurnActions(elapsed, gameState.getLastMove());
     }
-    gameManager->gameFinishedActions(winner);
+    if(gameOver)
+        gameManager->gameFinishedActions(winner);
 }
 
 bool NineMensMorris::checkGameOverCondition() const
@@ -66,7 +102,7 @@ bool NineMensMorris::checkGameOverCondition() const
     bool checkersCondition = gameState.isGameOverState();
     if(checkersCondition)
     {
-        std::cout << "checkers game over condition" << std::endl;
+        logger.log("%s(): checkers game over condition", __FUNCTION__);
         return true;
     }
     else
@@ -77,9 +113,9 @@ bool NineMensMorris::checkGameOverCondition() const
                           [this](const auto& stateFromPast)
                           {return stateFromPast.isBoardEqual(gameState);});
         if(stateRepetitionsInPast == 3)
-            std::cout << "state repeated 3 times" << std::endl;
+            logger.log("%s(): state repeated 3 times", __FUNCTION__);
         else
-            std::cout << "state NOT repeated 3 times, just " << stateRepetitionsInPast << std::endl;
+            logger.log("%s(): state NOT repeated 3 times, just %d", __FUNCTION__, stateRepetitionsInPast);
         return stateRepetitionsInPast == 3;
     }
 }

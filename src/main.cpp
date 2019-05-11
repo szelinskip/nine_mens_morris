@@ -5,17 +5,23 @@
 #include "tools/logging/Logger.hpp"
 #include "tools/logging/ConsoleLoggingPolicy.hpp"
 #include "tools/logging/FileLoggingPolicy.hpp"
+#include "tools/logging/GuiLogBoxLoggingPolicy.hpp"
 
 #include <QApplication>
 #include <iostream>
 
 int main(int argc, char *argv[])
 {
-    tools::Logger logger(std::make_unique<tools::ConsoleLoggingPolicy>());
-    logger.addLoggingPolicy(std::make_unique<tools::FileLoggingPolicy>("log", true));
     // view part
     QApplication a(argc, argv);
     MainWindow w;
+
+    // logger
+    tools::Logger logger(std::make_unique<tools::ConsoleLoggingPolicy>());
+    logger.addLoggingPolicy(std::make_unique<tools::FileLoggingPolicy>("log", true));
+    logger.addLoggingPolicy(std::make_unique<tools::GuiLogBoxLoggingPolicy>(w));
+
+    w.setLogger(&logger);
 
     // model part
     model::GameManager gameManager(logger);
@@ -24,7 +30,7 @@ int main(int argc, char *argv[])
 
     controller::MasterController controller(&w, &gameManager, logger);
 
-    controller::AppCleaner cleaner(&controller);
+    controller::AppCleaner cleaner(&controller, logger);
 
     qApp->setQuitOnLastWindowClosed(true);
     QObject::connect(qApp, SIGNAL(aboutToQuit()), &cleaner, SLOT(handleProperAppQuit()));

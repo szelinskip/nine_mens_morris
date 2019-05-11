@@ -12,6 +12,13 @@
 
 namespace model {
 
+PlayerFactory::PlayerFactory(tools::Logger& logger)
+    : logger(logger)
+{
+}
+
+PlayerFactory::~PlayerFactory() = default;
+
 std::unique_ptr<Player> PlayerFactory::makePlayer(GameManager& gameManager,
                                                   const std::string& name,
                                                   const PlayerColor color,
@@ -36,7 +43,7 @@ std::unique_ptr<Player> PlayerFactory::makeHumanPlayer(GameManager& gameManager,
                                                        const std::string& name,
                                                        const PlayerColor color) const
 {
-    return std::make_unique<HumanPlayer>(gameManager, name, color);
+    return std::make_unique<HumanPlayer>(gameManager, name, color, logger);
 }
 
 std::unique_ptr<Player> PlayerFactory::makeComputerPlayer(GameManager& gameManager,
@@ -62,7 +69,7 @@ std::unique_ptr<Player> PlayerFactory::makeComputerPlayer(GameManager& gameManag
     else  // (algType == "AlphaBeta")
         aiAlg = std::make_unique<ai::AlphaBetaPrunningAlg>(color, std::move(evalFn), playerDepth);
 
-    return std::make_unique<ComputerPlayer>(gameManager, name, color, std::move(aiAlg));
+    return std::make_unique<ComputerPlayer>(gameManager, name, color, std::move(aiAlg), logger);
 }
 
 } // namespace model

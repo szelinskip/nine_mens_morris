@@ -23,9 +23,14 @@ void MainWindow::setController(controller::MasterController* controller)
     this->controller = controller;
 }
 
+void MainWindow::setLogger(tools::Logger* logger)
+{
+    this->logger = logger;
+}
+
 void MainWindow::setCheckerOnField(const std::string& boardField, CheckerType checker)
 {
-    std::cout << __FUNCTION__ << " boardField: " << boardField << std::endl;
+    logger->log("%s(): boardField: ", __FUNCTION__, boardField.c_str());
     auto button = boardFieldToButton.at(boardField);
     button->setStyleSheet(
         styleProvider.buildStyleSheetCheckerWithBackground(checker, "rgb(52, 101, 164)"));
@@ -33,7 +38,7 @@ void MainWindow::setCheckerOnField(const std::string& boardField, CheckerType ch
 
 void MainWindow::resetFieldBackground(const std::string &boardField, CheckerType checker)
 {
-    std::cout << __FUNCTION__ << " boardField: " << boardField << std::endl;
+    logger->log("%s(): boardField: ", __FUNCTION__, boardField.c_str());
     auto button = boardFieldToButton.at(boardField);
     button->setStyleSheet(
         styleProvider.buildStyleSheetCheckerWithBackground(checker, ""));
@@ -151,6 +156,11 @@ void MainWindow::updateGameResumed()
 void MainWindow::updateGameStopped()
 {
     ui->gameStatusText->setText("Game stopped");
+}
+
+void MainWindow::logOnLogBox(const std::string& msg)
+{
+    ui->gameLogText->append(QString::fromStdString(msg));
 }
 
 void MainWindow::boardFieldClicked(QAbstractButton* button)

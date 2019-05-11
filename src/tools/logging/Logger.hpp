@@ -1,6 +1,8 @@
 #pragma once
 
-#include <string>
+#include <cstring>
+#include <chrono>
+#include <ctime>
 #include <memory>
 #include <fstream>
 #include <mutex>
@@ -38,8 +40,15 @@ template<class... Args>
 void Logger::log(const char* format, Args... args)
 {
     std::lock_guard<std::mutex> lock(logMutex);
-    char buffer[400];
-    std::snprintf(buffer, sizeof(buffer), format, args...);
+    char buffer[600];
+    std::time_t currTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    struct tm* time = std::localtime(&currTime);
+    constexpr uint32_t bufferTimeSize = 9;
+    char bufferTime[bufferTimeSize];
+    std::strftime(bufferTime, sizeof(bufferTime), "%H:%M:%S", time);
+    std::strcpy(buffer, bufferTime);
+    buffer[bufferTimeSize - 1] = ' ';
+    std::snprintf(buffer + bufferTimeSize, sizeof(buffer) - bufferTimeSize, format, args...);
     for(auto& policy : loggingPolicies)
         policy->log(buffer);
 }

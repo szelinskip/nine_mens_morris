@@ -6,6 +6,7 @@
 
 #include "CheckerType.hpp"
 #include "StyleProvider.hpp"
+#include <src/tools/logging/Logger.hpp>
 
 #include <QMainWindow>
 #include <QAbstractButton>
@@ -36,6 +37,7 @@ public:
     MainWindow& operator=(MainWindow&&) = delete;
 
     void setController(controller::MasterController* controller);
+    void setLogger(tools::Logger* logger);
 
 public slots:
     void boardFieldClicked(QAbstractButton* button);
@@ -64,6 +66,7 @@ public slots:
     void updateGamePaused();
     void updateGameResumed();
     void updateGameStopped();
+    void logOnLogBox(const std::string& msg);
 
 private:
     void initialize();
@@ -78,4 +81,6 @@ private:
     std::unordered_map<std::string, std::string> buttonNameToBoardPlace;
     std::unordered_map<std::string, QAbstractButton*> boardFieldToButton;
     controller::MasterController* controller;
+
+    tools::Logger* logger;
 };

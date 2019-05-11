@@ -11,8 +11,8 @@
 
 namespace model {
 
-HumanPlayer::HumanPlayer(GameManager& gameManager, const std::string& name, PlayerColor color)
-    : Player(gameManager, name, color)
+HumanPlayer::HumanPlayer(GameManager& gameManager, const std::string& name, PlayerColor color, tools::Logger& logger)
+    : Player(gameManager, name, color, logger)
 {
 }
 
@@ -20,7 +20,7 @@ HumanPlayer::~HumanPlayer() = default;
 
 bool HumanPlayer::makeMove(GameState& state)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s", __FUNCTION__);
     auto req = std::make_unique<ActionInputReq>(state.isInFirstStage(color), false);
     gameManager.putAction(std::move(req));
     Move move = gameManager.getInput();
@@ -37,7 +37,7 @@ bool HumanPlayer::makeMove(GameState& state)
 
 bool HumanPlayer::millMove(GameState& state)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s", __FUNCTION__);
     auto req = std::make_unique<ActionInputReq>(state.isInFirstStage(color), true);
     gameManager.putAction(std::move(req));
     Move move = gameManager.getInput();

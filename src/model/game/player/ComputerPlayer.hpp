@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <src/tools/logging/Logger.hpp>
 #include "Player.hpp"
 #include "ai/AiAlgorithm.hpp"
 
@@ -17,7 +18,8 @@ public:
     ComputerPlayer(GameManager& gameManager,
                    const std::string& name,
                    PlayerColor color,
-                   std::unique_ptr<ai::AiAlgorithm> aiAlg);
+                   std::unique_ptr<ai::AiAlgorithm> aiAlg,
+                   tools::Logger& logger);
     virtual ~ComputerPlayer() override;
 
     ComputerPlayer() = delete;
@@ -28,6 +30,7 @@ public:
 
     virtual bool makeMove(GameState& state) override;
     virtual bool millMove(GameState& state) override;
+    virtual std::string getInfo() const override;
 
 private:
     std::unique_ptr<ai::AiAlgorithm> aiAlg;

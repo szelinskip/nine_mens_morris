@@ -2,6 +2,8 @@
 
 #include "MasterController.hpp"
 
+#include <src/tools/logging/Logger.hpp>
+
 #include <QObject>
 
 namespace controller {
@@ -10,7 +12,7 @@ class AppCleaner : public QObject
 {
     Q_OBJECT
 public:
-    AppCleaner(MasterController* controller);
+    AppCleaner(MasterController* controller, tools::Logger& logger);
     ~AppCleaner();
 
     AppCleaner(const AppCleaner&) = delete;
@@ -23,6 +25,7 @@ public slots:
 
 private:
     MasterController* controller;
+    tools::Logger& logger;
 };
 
 } // namespace controller

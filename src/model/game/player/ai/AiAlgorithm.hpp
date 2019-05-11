@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include <src/model/game/player/PlayerColor.hpp>
 #include "EvalFunction.hpp"
@@ -12,7 +13,7 @@ namespace ai {
 class AiAlgorithm
 {
 public:
-    AiAlgorithm(const PlayerColor who, std::unique_ptr<EvalFunction>&& evalFn);
+    AiAlgorithm(const std::string& name, const PlayerColor who, std::unique_ptr<EvalFunction>&& evalFn);
     virtual ~AiAlgorithm();
 
     AiAlgorithm() = delete;
@@ -22,8 +23,10 @@ public:
     AiAlgorithm& operator=(AiAlgorithm&&);
 
     virtual void makeMove(GameState& gameState) = 0;
+    virtual std::string getInfo() const;
 
 protected:
+    std::string name;
     PlayerColor who;
     std::unique_ptr<EvalFunction> evalFn;
 };

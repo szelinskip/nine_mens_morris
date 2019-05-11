@@ -31,13 +31,14 @@ GameManager::GameManager(tools::Logger& logger)
 
 void GameManager::run()
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     shouldRunLoop = true;
     actionsLoopThread = std::thread(&GameManager::runningLoop, this);
 }
 
 void GameManager::stop()
 {
+    logger.log("%s()", __FUNCTION__);
     // release waiting threads to join them properly
     shouldTerminate = true;
     userInputProvided.notify_all();
@@ -67,18 +68,18 @@ void GameManager::putAction(ActionPtr action)
 {
     if(shouldTerminate)
         return;
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s(), action type: %s", __FUNCTION__, actionTypeToString(action->getType()));
     std::lock_guard<std::mutex> lock(actionsQMutex);
     actionsQueue.push(std::move(action));
 }
 
 Move GameManager::getInput()
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     std::unique_lock<std::mutex> lock(userInputMutex);
     userInputProvided.wait(lock, [this](){return inputProvided || shouldStop || shouldTerminate;});
     inputProvided = false;
-    std::cout << __FUNCTION__ << " input got " << userInputMove.fromField << " -> " << userInputMove.toField << std::endl;
+    logger.log("%s(), input got %s -> %s", __FUNCTION__, userInputMove.fromField.c_str(), userInputMove.toField.c_str());
     return userInputMove;
 }
 
@@ -89,7 +90,7 @@ void GameManager::beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
                                     const uint32_t whiteCheckersKilledByBlack,
                                     const uint32_t blackCheckersKilledByWhite)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     if(shouldUpdateUi)
     {
         controller->updateUI(whiteLeftCheckersToPut,
@@ -106,22 +107,22 @@ void GameManager::beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
 
 void GameManager::afterTurnActions(std::chrono::milliseconds elapsed, const Move& lastMove)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     controller->updateLastMove(elapsed, lastMove);
-    std::cout << "sleeping for: " << pauseBetweenPlayers.count() << " ms" << std::endl;
+    logger.log("%s() sleeping for: %ull ms", __FUNCTION__, pauseBetweenPlayers.count());
     std::this_thread::sleep_for(pauseBetweenPlayers);
-    std::cout << "end sleep" << std::endl;
+    logger.log("%s() end sleep", __FUNCTION__);
 }
 
 void GameManager::playersTurnAction(const Player* currentPlayer)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     controller->updateCurrentPlayer(currentPlayer->getColor());
 }
 
 void GameManager::gameFinishedActions(const Player* winner)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     std::string winnerName = "DRAW";
     if(winner != nullptr)
         winnerName = winner->getName();
@@ -130,7 +131,7 @@ void GameManager::gameFinishedActions(const Player* winner)
 
 void GameManager::runningLoop()
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     while(shouldRunLoop)
     {
         {
@@ -166,10 +167,10 @@ void GameManager::runGame(const PlayerType whitePlayerType,
                           const PlayerHeuristic blackPlayerHeuristic,
                           const uint32_t blackPlayerDepth)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     gameRunning = true;
 
-    PlayerFactory playerFactory;
+    PlayerFactory playerFactory(logger);
 
     auto whitePlayer = playerFactory.makePlayer(*this,
                                                 "Player white",
@@ -187,15 +188,17 @@ void GameManager::runGame(const PlayerType whitePlayerType,
 
     nineMensMorris = std::make_unique<NineMensMorris>(std::move(whitePlayer),
                                                       std::move(blackPlayer),
-                                                      this);
+                                                      this,
+                                                      logger);
 
     nineMensMorris->startGame();
-    std::cout << __FUNCTION__ << " game finished " << std::endl;
+    gameRunning = false;
+    logger.log("%s() game finished", __FUNCTION__);
 }
 
 void GameManager::handleAction(ActionPtr action)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s(), action type: %s", __FUNCTION__, actionTypeToString(action->getType()));
     ActionType type = action->getType();
     switch(type)
     {
@@ -233,9 +236,10 @@ void GameManager::handleAction(ActionPtr action)
 
 void GameManager::handleInputReq(ActionPtr action)
 {
+    logger.log("%s()", __FUNCTION__);
     auto actionInputReq = dynamic_cast<ActionInputReq*>(action.get());
     if(actionInputReq == nullptr)
-        throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
+        throw ActionTypeMismatchException("Type: " + std::string(actionTypeToString(action->getType())));
     std::lock_guard<std::mutex> lock(userInputMutex);
     userInputMove = Move{};
     if(!actionInputReq->isFirstStage() && !actionInputReq->isMillMove())
@@ -243,15 +247,15 @@ void GameManager::handleInputReq(ActionPtr action)
     else
         waitingForInput += 1;
     millMoveInputAwaiting = actionInputReq->isMillMove();
-    std::cout << __FUNCTION__ << "waiting for: " << waitingForInput << " is mill move? " << millMoveInputAwaiting << std::endl;
+    logger.log("%s(): waiting for: %d, is mill move: %d", __FUNCTION__, waitingForInput, millMoveInputAwaiting);
 }
 
 void GameManager::handleInputProvided(ActionPtr action)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     auto actionInputProvided = dynamic_cast<ActionInputProvided*>(action.get());
     if(actionInputProvided == nullptr)
-        throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
+        throw ActionTypeMismatchException("Type: " + std::string(actionTypeToString(action->getType())));
     std::lock_guard<std::mutex> lock(userInputMutex);
     if(waitingForInput > 0)
     {
@@ -268,10 +272,10 @@ void GameManager::handleInputProvided(ActionPtr action)
 
 void GameManager::handleGameStart(ActionPtr action)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     auto actionGameStart = dynamic_cast<ActionGameStart*>(action.get());
     if(actionGameStart == nullptr)
-        throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
+        throw ActionTypeMismatchException("Type: " + std::string(actionTypeToString(action->getType())));
     if(gameRunning)
         return;
     if(gameThread.joinable())
@@ -293,22 +297,23 @@ void GameManager::handleGameStart(ActionPtr action)
 
 void GameManager::handleGameStop()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldStop = true;
     userInputProvided.notify_all();
-    if(gameThread.joinable())
-        gameThread.join();
     gameRunning = false;
     controller->gameStopped();
 }
 
 void GameManager::handleGamePause()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldPause = true;
     controller->gamePaused();
 }
 
 void GameManager::handleGameResume()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldPause = false;
     pauseCondition.notify_all();
     controller->gameResumed();
@@ -316,26 +321,29 @@ void GameManager::handleGameResume()
 
 void GameManager::handleActionMoveDone(ActionPtr action)
 {
-    std::cout << __FUNCTION__ << std::endl;
+    logger.log("%s()", __FUNCTION__);
     auto actionMoveDone = dynamic_cast<ActionMoveDone*>(action.get());
     if(actionMoveDone == nullptr)
-        throw ActionTypeMismatchException("Type: " + std::to_string(static_cast<int>(action->getType())));
+        throw ActionTypeMismatchException("Type: " + std::string(actionTypeToString(action->getType())));
     if(shouldUpdateUi)
         controller->updateUI(actionMoveDone->getMove());
 }
 
 void GameManager::handleGuiOff()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldUpdateUi = false;
 }
 
 void GameManager::handleGuiOn()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldUpdateUi = true;
 }
 
 Move GameManager::buildInputMove()
 {
+    logger.log("%s()", __FUNCTION__);
     Move m{};
     if(boardFieldInputs.size() == 2)
     {
@@ -360,6 +368,7 @@ Move GameManager::buildInputMove()
 
 void GameManager::resetGameManager()
 {
+    logger.log("%s()", __FUNCTION__);
     shouldTerminate = false;
     shouldStop = false;
     shouldPause = false;

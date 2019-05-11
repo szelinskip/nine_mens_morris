@@ -11,7 +11,7 @@ namespace model {
 class HumanPlayer : public Player
 {
 public:
-    HumanPlayer(GameManager& gameManager, const std::string& name, PlayerColor color);
+    HumanPlayer(GameManager& gameManager, const std::string& name, PlayerColor color, tools::Logger& logger);
     virtual ~HumanPlayer() override;
 
     HumanPlayer() = delete;

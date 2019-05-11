@@ -15,7 +15,8 @@ namespace ai {
 class EvalFnGenericLambda : public EvalFunction
 {
 public:
-    EvalFnGenericLambda(const std::function<int(const GameState&, const PlayerColor)>& evalFn);
+    EvalFnGenericLambda(const std::function<int(const GameState&, const PlayerColor)>& evalFn,
+                        const std::string& info);
     virtual ~EvalFnGenericLambda() override;
 
     EvalFnGenericLambda() = delete;

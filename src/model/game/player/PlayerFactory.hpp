@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <memory>
 
+#include <src/tools/logging/Logger.hpp>
 #include "PlayerColor.hpp"
 #include "PlayerInfo.hpp"
 
@@ -14,6 +15,15 @@ class Player;
 class PlayerFactory
 {
 public:
+    PlayerFactory(tools::Logger& logger);
+    ~PlayerFactory();
+
+    PlayerFactory() = delete;
+    PlayerFactory(const PlayerFactory&) = delete;
+    PlayerFactory& operator=(const PlayerFactory&) = delete;
+    PlayerFactory(PlayerFactory&&) = delete;
+    PlayerFactory& operator=(PlayerFactory&&) = delete;
+
     std::unique_ptr<Player> makePlayer(GameManager& gameManager,
                                        const std::string& name,
                                        const PlayerColor color,
@@ -30,6 +40,8 @@ private:
                                                const std::string& algType,
                                                const PlayerHeuristic playerHeuristic,
                                                const uint32_t playerDepth) const;
+
+    tools::Logger& logger;
 };
 
 } // namespace model

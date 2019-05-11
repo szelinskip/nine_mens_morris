@@ -10,7 +10,7 @@ namespace model {
 namespace ai {
 
 MinMaxAlg::MinMaxAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth)
-    : AiAlgorithm(who, std::move(evalFn))
+    : AiAlgorithm("MinMax", who, std::move(evalFn))
     , depth(depth)
 {
 }
@@ -46,6 +46,11 @@ void MinMaxAlg::makeMove(GameState& gameState)
         }
     }
     gameState = possibleStates[index];
+}
+
+std::string MinMaxAlg::getInfo() const
+{
+    return AiAlgorithm::getInfo() + ", depth: " + std::to_string(depth);
 }
 
 int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, bool isMaximizing)

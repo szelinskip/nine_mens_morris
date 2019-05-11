@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "GameState.hpp"
+#include <src/tools/logging/Logger.hpp>
 
 namespace model {
 class Player;
@@ -16,7 +17,10 @@ namespace model {
 class NineMensMorris
 {
 public:
-    NineMensMorris(std::unique_ptr<Player> whitePlayer, std::unique_ptr<Player> blackPlayer, GameManager* gameManager);
+    NineMensMorris(std::unique_ptr<Player> whitePlayer,
+                   std::unique_ptr<Player> blackPlayer,
+                   GameManager* gameManager,
+                   tools::Logger& logger);
     ~NineMensMorris();
 
     NineMensMorris() = delete;
@@ -40,6 +44,12 @@ private:
     std::vector<GameState> gameStatesHistory;
 
     GameManager* gameManager;
+
+    uint32_t turnNum;
+
+    tools::Logger& logger;
+    tools::Logger gameMovesLogger;
+    tools::Logger gameStatesLogger;
 };
 
 } // namespace model

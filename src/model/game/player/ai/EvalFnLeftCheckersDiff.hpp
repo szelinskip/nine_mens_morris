@@ -13,6 +13,14 @@ namespace ai {
 class EvalFnLeftCheckersDiff : public EvalFunction
 {
 public:
+    EvalFnLeftCheckersDiff();
+    virtual ~EvalFnLeftCheckersDiff() override;
+
+    EvalFnLeftCheckersDiff(const EvalFnLeftCheckersDiff&);
+    EvalFnLeftCheckersDiff& operator=(const EvalFnLeftCheckersDiff&);
+    EvalFnLeftCheckersDiff(EvalFnLeftCheckersDiff&&);
+    EvalFnLeftCheckersDiff& operator=(EvalFnLeftCheckersDiff&&);
+
     virtual int evalGameState(const GameState& gameState, const PlayerColor who) override;
 };
 

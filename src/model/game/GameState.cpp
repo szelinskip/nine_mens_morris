@@ -37,15 +37,17 @@ GameState::GameState(GameBoard&& board,
 GameState::GameState(const GameState &otherGameState,
                      GameBoard &&board,
                      const uint8_t whiteLeftCheckersOnBoard,
-                     const uint8_t blackLeftCheckersOnBoard)
+                     const uint8_t blackLeftCheckersOnBoard,
+                     const uint8_t whiteCheckersKilledByBlack,
+                     const uint8_t blackCheckersKilledByWhite)
     : board(std::move(board))
     , isFirstStage(otherGameState.isFirstStage)
     , whiteLeftCheckersToPut(otherGameState.whiteLeftCheckersToPut)
     , blackLeftCheckersToPut(otherGameState.blackLeftCheckersToPut)
     , whiteLeftCheckersOnBoard(whiteLeftCheckersOnBoard)
     , blackLeftCheckersOnBoard(blackLeftCheckersOnBoard)
-    , whiteCheckersKilledByBlack(otherGameState.whiteCheckersKilledByBlack)
-    , blackCheckersKilledByWhite(otherGameState.blackCheckersKilledByWhite)
+    , whiteCheckersKilledByBlack(whiteCheckersKilledByBlack)
+    , blackCheckersKilledByWhite(blackCheckersKilledByWhite)
 {
 }
 
@@ -380,21 +382,30 @@ std::vector<GameState> GameState::getStatesAfterMillFormed(const GameState& mill
     possibleStates.reserve((*checkersPossibleToTake).size());
     uint8_t whiteLeftCheckersOnBoard;
     uint8_t blackLeftCheckersOnBoard;
+    uint8_t whiteCheckersKilledByBlack;
+    uint8_t blackCheckersKilledByWhite;
     if(who == PlayerColor::White)
     {
         whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard;
         blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard - 1;
+        blackCheckersKilledByWhite = millState.blackCheckersKilledByWhite + 1;
     }
     else
     {
         whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard - 1;
         blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard;
+        whiteCheckersKilledByBlack = millState.whiteCheckersKilledByBlack + 1;
     }
     for(const auto& checker : *checkersPossibleToTake)
     {
         GameBoard gameBoard{millState.board};
         gameBoard.setColorOnField(checker, PlayerColor::None);
-        possibleStates.emplace_back(millState, std::move(gameBoard), whiteLeftCheckersOnBoard, blackLeftCheckersOnBoard);
+        possibleStates.emplace_back(millState,
+                                    std::move(gameBoard),
+                                    whiteLeftCheckersOnBoard,
+                                    blackLeftCheckersOnBoard,
+                                    whiteCheckersKilledByBlack,
+                                    blackCheckersKilledByWhite);
     }
     return possibleStates;
 }

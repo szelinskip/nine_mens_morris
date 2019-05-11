@@ -10,7 +10,7 @@ namespace model {
 namespace ai {
 
 AlphaBetaPrunningAlg::AlphaBetaPrunningAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth)
-    : AiAlgorithm(who, std::move(evalFn))
+    : AiAlgorithm("AlphaBeta", who, std::move(evalFn))
     , depth(depth)
 {
 }
@@ -51,6 +51,11 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
             break;
     }
     gameState = possibleStates[index];
+}
+
+std::string AlphaBetaPrunningAlg::getInfo() const
+{
+    return AiAlgorithm::getInfo() + ", depth: " + std::to_string(depth);
 }
 
 int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameState,

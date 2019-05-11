@@ -13,8 +13,9 @@ namespace model {
 ComputerPlayer::ComputerPlayer(GameManager& gameManager,
                                const std::string& name,
                                PlayerColor color,
-                               std::unique_ptr<ai::AiAlgorithm> aiAlg)
-    : Player(gameManager, name, color)
+                               std::unique_ptr<ai::AiAlgorithm> aiAlg,
+                               tools::Logger& logger)
+    : Player(gameManager, name, color, logger)
     , aiAlg(std::move(aiAlg))
 {
 }
@@ -33,6 +34,11 @@ bool ComputerPlayer::millMove(GameState& /*state*/)
 {
     // nothing to do, potential mill move would had been done in makeMove()
     return true;
+}
+
+std::string ComputerPlayer::getInfo() const
+{
+    return Player::getInfo() + ", ai alg: " + aiAlg->getInfo();
 }
 
 } // namespace model

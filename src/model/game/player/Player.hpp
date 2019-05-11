@@ -3,6 +3,7 @@
 #include <string>
 
 #include <src/model/game/GameState.hpp>
+#include <src/tools/logging/Logger.hpp>
 #include "PlayerColor.hpp"
 
 namespace model {
@@ -14,7 +15,7 @@ namespace model {
 class Player
 {
 public:
-    Player(GameManager& gameManager, const std::string& name, PlayerColor color);
+    Player(GameManager& gameManager, const std::string& name, PlayerColor color, tools::Logger& logger);
     virtual ~Player();
 
     Player() = delete;
@@ -27,11 +28,17 @@ public:
     virtual bool millMove(GameState& state) = 0;
     virtual std::string getName() const;
     virtual PlayerColor getColor() const;
+    virtual std::string getInfo() const;
+    void incrementMovesNumber();
+    uint32_t getMovesNumber() const;
 
 protected:
     GameManager& gameManager;
     std::string name;
     PlayerColor color;
+    uint32_t movesNumber;
+
+    tools::Logger& logger;
 };
 
 } // namespace model

@@ -19,12 +19,17 @@ public:
               const uint8_t blackLeftCheckersOnBoard,
               const uint8_t whiteCheckersKilledByBlack,
               const uint8_t blackCheckersKilledByWhite);
+
     GameState(const GameState& otherGameState,
               GameBoard&& board,
               const uint8_t whiteLeftCheckersOnBoard,
-              const uint8_t blackLeftCheckersOnBoard);
+              const uint8_t blackLeftCheckersOnBoard,
+              const uint8_t whiteCheckersKilledByBlack,
+              const uint8_t blackCheckersKilledByWhite);
+
     GameState(const GameState& otherGameState,
               GameBoard&& board);
+
     ~GameState();
 
     GameState(const GameState&);

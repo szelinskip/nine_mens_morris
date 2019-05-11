@@ -22,6 +22,8 @@ public:
     MinMaxAlg& operator=(MinMaxAlg&&);
 
     virtual void makeMove(GameState& gameState) override;
+    virtual std::string getInfo() const override;
+
 private:
     int minMax(const GameState& gameState, const uint32_t currentDepth, bool isMaximizing);
     int evaluate(const GameState& gameState) const;
