@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 #include <memory>
 
@@ -15,7 +16,7 @@ class Player;
 class PlayerFactory
 {
 public:
-    PlayerFactory(tools::Logger& logger);
+    PlayerFactory(tools::Logger& logger, const std::chrono::seconds timeConstraint);
     ~PlayerFactory();
 
     PlayerFactory() = delete;
@@ -41,6 +42,7 @@ private:
                                                const PlayerHeuristic playerHeuristic,
                                                const uint32_t playerDepth) const;
 
+    std::chrono::seconds timeConstraint;
     tools::Logger& logger;
 };
 

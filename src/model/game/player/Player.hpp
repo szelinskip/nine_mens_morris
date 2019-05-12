@@ -31,6 +31,7 @@ public:
     virtual std::string getInfo() const;
     virtual uint32_t getVisitedStates() const;
     virtual uint32_t getPrunedStates() const;
+    virtual bool wasSearchTimeExceeded() const;
     void incrementMovesNumber();
     uint32_t getMovesNumber() const;
 
@@ -41,6 +42,7 @@ protected:
     uint32_t movesNumber;
     uint32_t visitedStates;
     uint32_t prunedStates;
+    bool searchTimeExceeded;
 
     tools::Logger& logger;
 };

@@ -41,14 +41,18 @@ public:
                   const uint32_t blackCheckersKilledByWhite);
     void resetUI();
     void updateCurrentPlayer(const PlayerColor color);
-    void updateLastMove(std::chrono::milliseconds elapsed, const Move& lastMove);
+    void updateLastMove(std::chrono::milliseconds elapsed,
+                        const Move& lastMove,
+                        const uint32_t turnNum,
+                        const bool timeConstraintExceeded);
     void gameFinishedStatus(const std::string& winnerName);
     void startGame(const std::string& whitePlayerTypeStr,
                    const std::string& whitePlayerHeurisitcStr,
                    const std::string& whiteTreeDepthStr,
                    const std::string& blackPlayerTypeStr,
                    const std::string& blackPlayerHeurisitcStr,
-                   const std::string& blackTreeDepthStr);
+                   const std::string& blackTreeDepthStr,
+                   const std::string& timeConstraintStr);
     void stopGame();
     void pauseGame();
     void resumeGame();

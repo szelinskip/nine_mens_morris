@@ -11,6 +11,7 @@ Player::Player(GameManager& gameManager, const std::string& name, PlayerColor co
     , movesNumber(0)
     , visitedStates(0)
     , prunedStates(0)
+    , searchTimeExceeded(false)
     , logger(logger)
 {
 }
@@ -40,6 +41,11 @@ uint32_t Player::getVisitedStates() const
 uint32_t Player::getPrunedStates() const
 {
     return prunedStates;
+}
+
+bool Player::wasSearchTimeExceeded() const
+{
+    return searchTimeExceeded;
 }
 
 void Player::incrementMovesNumber()

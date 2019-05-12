@@ -59,7 +59,9 @@ public slots:
                         const std::string& fromField,
                         const std::string& toField,
                         const std::string& fieldOponentsCheckerTaken,
-                        CheckerType who);
+                        CheckerType who,
+                        uint32_t turnNum,
+                        bool timeConstraintExceeded);
     void resetUI();
     void updateCurrentPlayer(CheckerType checkerColor);
     void updateGameFinished(const std::string& winnerName);

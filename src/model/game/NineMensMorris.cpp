@@ -47,6 +47,8 @@ void NineMensMorris::startGame()
                                        gameState.getBlackLeftCheckersOnBoard(),
                                        gameState.getWhiteCheckersKilledByBlack(),
                                        gameState.getBlackCheckersKilledByWhite());
+
+        bool timeConstraintExceeded = false;
         std::chrono::milliseconds elapsed;
         if(!checkGameOverCondition())
         {
@@ -65,9 +67,10 @@ void NineMensMorris::startGame()
             std::chrono::time_point moveDoneTp = std::chrono::steady_clock::now();
             elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(moveDoneTp - startMoveTp);
             const auto& lastMove = gameState.getLastMove();
+            timeConstraintExceeded = currentPlayer->wasSearchTimeExceeded();
             gameMovesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
                                 "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
-                                "visited states: %d, pruned states: %d",
+                                "visited states: %d, pruned states: %d, time constraint exceeded: %d",
                                 turnNum,
                                 currentPlayer->getName().c_str(),
                                 currentPlayer->getMovesNumber(),
@@ -76,10 +79,12 @@ void NineMensMorris::startGame()
                                 lastMove.fieldOponentsCheckerTaken.c_str(),
                                 elapsed.count() / 1000.0,
                                 currentPlayer->getVisitedStates(),
-                                currentPlayer->getPrunedStates());
+                                currentPlayer->getPrunedStates(),
+                                timeConstraintExceeded);
             gameStatesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
                                  "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
-                                 "visited states: %d, pruned states: %d, game state:\n%s",
+                                 "visited states: %d, pruned states: %d, time constraint exceeded: %d, "
+                                 "game state:\n%s",
                                  turnNum,
                                  currentPlayer->getName().c_str(),
                                  currentPlayer->getMovesNumber(),
@@ -89,6 +94,7 @@ void NineMensMorris::startGame()
                                  elapsed.count() / 1000.0,
                                  currentPlayer->getVisitedStates(),
                                  currentPlayer->getPrunedStates(),
+                                 timeConstraintExceeded,
                                  gameState.getStrRepr().c_str());
             gameStatesHistory.emplace_back(gameState);
         }
@@ -104,7 +110,7 @@ void NineMensMorris::startGame()
                     winner = getCurrentPlayer();
             }
         }
-        gameManager->afterTurnActions(elapsed, gameState.getLastMove());
+        gameManager->afterTurnActions(elapsed, gameState.getLastMove(), turnNum, timeConstraintExceeded);
     }
     if(gameOver)
         gameManager->gameFinishedActions(winner);

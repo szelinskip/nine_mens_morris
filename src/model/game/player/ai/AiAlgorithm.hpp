@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <memory>
 #include <string>
 
@@ -13,7 +14,10 @@ namespace ai {
 class AiAlgorithm
 {
 public:
-    AiAlgorithm(const std::string& name, const PlayerColor who, std::unique_ptr<EvalFunction>&& evalFn);
+    AiAlgorithm(const std::string& name,
+                const PlayerColor who,
+                std::unique_ptr<EvalFunction>&& evalFn,
+                const std::chrono::seconds searchTimeLimit);
     virtual ~AiAlgorithm();
 
     AiAlgorithm() = delete;
@@ -25,15 +29,25 @@ public:
     virtual void makeMove(GameState& gameState) = 0;
     virtual uint32_t getVisitedStates() const;
     virtual uint32_t getPrunedStates() const;
+    virtual bool wasSearchTimeExceeded() const;
     virtual std::string getInfo() const;
 
 protected:
+    virtual bool checkTimeConstraint();
+
     std::string name;
     PlayerColor who;
     std::unique_ptr<EvalFunction> evalFn;
 
     uint32_t visitedStates;
     uint32_t prunedStates;
+
+    using SteadyClock = std::chrono::steady_clock;
+    using Tp = std::chrono::steady_clock::time_point;
+
+    std::chrono::seconds searchTimeLimit;
+    Tp startAlgTp;
+    bool timeConstraintExceeded;
 };
 
 } // namespace ai

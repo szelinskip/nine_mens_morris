@@ -108,10 +108,13 @@ void GameManager::beforeTurnActions(const uint32_t turnNum,
     pauseCondition.wait(lock, [this](){return !shouldPause || shouldStop || shouldTerminate;});
 }
 
-void GameManager::afterTurnActions(std::chrono::milliseconds elapsed, const Move& lastMove)
+void GameManager::afterTurnActions(std::chrono::milliseconds elapsed,
+                                   const Move& lastMove,
+                                   const uint32_t turnNum,
+                                   const bool timeConstraintExceeded)
 {
     logger.log("%s()", __FUNCTION__);
-    controller->updateLastMove(elapsed, lastMove);
+    controller->updateLastMove(elapsed, lastMove, turnNum, timeConstraintExceeded);
     if(!shouldIntroducePauseBetweenPlayers)
         return;
     logger.log("%s() sleeping for: %llu ms", __FUNCTION__, pauseBetweenPlayers.count());
@@ -186,12 +189,13 @@ void GameManager::runGame(const PlayerType whitePlayerType,
                           const uint32_t whitePlayerDepth,
                           const PlayerType blackPlayerType,
                           const PlayerHeuristic blackPlayerHeuristic,
-                          const uint32_t blackPlayerDepth)
+                          const uint32_t blackPlayerDepth,
+                          const std::chrono::seconds timeConstraint)
 {
     logger.log("%s()", __FUNCTION__);
     gameRunning = true;
 
-    PlayerFactory playerFactory(logger);
+    PlayerFactory playerFactory(logger, timeConstraint);
 
     auto whitePlayer = playerFactory.makePlayer(*this,
                                                 "Player white",
@@ -315,7 +319,8 @@ void GameManager::handleGameStart(ActionPtr action)
                              actionGameStart->whitePlayerDepth,
                              actionGameStart->blackPlayerType,
                              actionGameStart->blackPlayerHeuristic,
-                             actionGameStart->blackPlayerDepth);
+                             actionGameStart->blackPlayerDepth,
+                             actionGameStart->timeConstraint);
     controller->gameStarted();
 }
 

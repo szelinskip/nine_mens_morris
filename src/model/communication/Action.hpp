@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <string>
 
 #include "ActionType.hpp"
@@ -92,7 +93,8 @@ public:
                     const uint32_t whitePlayerDepth,
                     const PlayerType blackPlayerType,
                     const PlayerHeuristic blackPlayerHeuristic,
-                    const uint32_t blackPlayerDepth);
+                    const uint32_t blackPlayerDepth,
+                    const std::chrono::seconds timeConstraint);
 
     virtual ~ActionGameStart();
 
@@ -108,6 +110,8 @@ public:
     PlayerType blackPlayerType;
     PlayerHeuristic blackPlayerHeuristic;
     uint32_t blackPlayerDepth;
+
+    std::chrono::seconds timeConstraint;
 };
 
 class ActionGameStop : public Action

@@ -77,13 +77,15 @@ void MainWindow::updateLastMove(double elapsedSeconds,
                                 const std::string& fromField,
                                 const std::string& toField,
                                 const std::string& fieldOponentsCheckerTaken,
-                                CheckerType who)
+                                CheckerType who,
+                                uint32_t turnNum,
+                                bool timeConstraintExceeded)
 {
     QString prologueTime = "Last turn time [s]: ";
     QString seconds;
     seconds.sprintf("%.2f", elapsedSeconds);
     ui->lastTurnTimeText->setText(prologueTime + seconds);
-    QString prologueLastMove = "Last turn move:\n";
+    QString prologueLastMove = QString::fromStdString("Last turn (" + std::to_string(turnNum) + ") move:\n");
     std::string lastMove = "Who: ";
     if(who == CheckerType::White)
         lastMove += "White\n";
@@ -94,7 +96,9 @@ void MainWindow::updateLastMove(double elapsedSeconds,
     if(!toField.empty())
         lastMove += "To field: " + toField + "\n";
     if(!fieldOponentsCheckerTaken.empty())
-        lastMove += "Oponent's checker taken: " + fieldOponentsCheckerTaken;
+        lastMove += "Oponent's checker taken: " + fieldOponentsCheckerTaken += "\n";
+    if(timeConstraintExceeded)
+        lastMove += "LAST MOVE EXCEEDED TIME CONSTRAINT";
     ui->lastTurnMoveText->setText(prologueLastMove + QString::fromStdString(lastMove));
 }
 
@@ -180,9 +184,11 @@ void MainWindow::startGameClicked()
     std::string blackPlayerType = ui->blackPlayerTypeCombo->currentText().toStdString();
     std::string blackPlayerHeurisitc = ui->blackPlayerHeuristicCombo->currentText().toStdString();
     std::string blackTreeDepth = ui->blackPlayerTreeDepthText->toPlainText().toStdString();
+    std::string timeConstraint = ui->timeConstraintText->toPlainText().toStdString();
 
     controller->startGame(whitePlayerType, whitePlayerHeurisitc, whiteTreeDepth,
-                          blackPlayerType, blackPlayerHeurisitc, blackTreeDepth);
+                          blackPlayerType, blackPlayerHeurisitc, blackTreeDepth,
+                          timeConstraint);
 }
 
 void MainWindow::stopGameClicked()

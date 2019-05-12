@@ -82,7 +82,8 @@ ActionGameStart::ActionGameStart(const PlayerType whitePlayerType,
                                  const uint32_t whitePlayerDepth,
                                  const PlayerType blackPlayerType,
                                  const PlayerHeuristic blackPlayerHeuristic,
-                                 const uint32_t blackPlayerDepth)
+                                 const uint32_t blackPlayerDepth,
+                                 const std::chrono::seconds timeConstraint)
     : Action(ActionType::GameStart)
     , whitePlayerType(whitePlayerType)
     , whitePlayerHeuristic(whitePlayerHeuristic)
@@ -90,6 +91,7 @@ ActionGameStart::ActionGameStart(const PlayerType whitePlayerType,
     , blackPlayerType(blackPlayerType)
     , blackPlayerHeuristic(blackPlayerHeuristic)
     , blackPlayerDepth(blackPlayerDepth)
+    , timeConstraint(timeConstraint)
 {
 }
 

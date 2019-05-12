@@ -100,7 +100,10 @@ void MasterController::updateCurrentPlayer(const PlayerColor color)
     QMetaObject::invokeMethod(mainWindow, "updateCurrentPlayer", Q_ARG(CheckerType, convertColor(color)));
 }
 
-void MasterController::updateLastMove(std::chrono::milliseconds elapsed, const Move& lastMove)
+void MasterController::updateLastMove(std::chrono::milliseconds elapsed,
+                                      const Move& lastMove,
+                                      const uint32_t turnNum,
+                                      const bool timeConstraintExceeded)
 {
     double elapsedSeconds = elapsed.count() / 1000.0;
     QMetaObject::invokeMethod(mainWindow, "updateLastMove",
@@ -108,7 +111,9 @@ void MasterController::updateLastMove(std::chrono::milliseconds elapsed, const M
                               Q_ARG(const std::string&, lastMove.fromField),
                               Q_ARG(const std::string&, lastMove.toField),
                               Q_ARG(const std::string&, lastMove.fieldOponentsCheckerTaken),
-                              Q_ARG(CheckerType, convertColor(lastMove.who)));
+                              Q_ARG(CheckerType, convertColor(lastMove.who)),
+                              Q_ARG(uint32_t, turnNum),
+                              Q_ARG(bool, timeConstraintExceeded));
 }
 
 void MasterController::gameFinishedStatus(const std::string& winnerName)
@@ -121,7 +126,8 @@ void MasterController::startGame(const std::string& whitePlayerTypeStr,
                                  const std::string& whiteTreeDepthStr,
                                  const std::string& blackPlayerTypeStr,
                                  const std::string& blackPlayerHeurisitcStr,
-                                 const std::string& blackTreeDepthStr)
+                                 const std::string& blackTreeDepthStr,
+                                 const std::string& timeConstraintStr)
 {
     logger.log("%s(): whitePlayerType: %s, whitePlayerHeurisitc: %s, whiteTreeDepth: %s, "
                "blackPlayerType: %s, blackPlayerHeuristic: %s, blackTreeDepth: %s",
@@ -140,12 +146,17 @@ void MasterController::startGame(const std::string& whitePlayerTypeStr,
     if(!blackTreeDepthStr.empty())
         blackPlayerDepth = std::stoi(blackTreeDepthStr);
 
+    int timeConstraintSeconds = 0;
+    if(!timeConstraintStr.empty())
+        timeConstraintSeconds = std::stoi(timeConstraintStr);
+
     auto action = std::make_unique<ActionGameStart>(whitePlayerType,
                                                     whitePlayerHeuristic,
                                                     static_cast<uint32_t>(whitePlayerDepth),
                                                     blackPlayerType,
                                                     blackPlayerHeuristic,
-                                                    static_cast<uint32_t>(blackPlayerDepth));
+                                                    static_cast<uint32_t>(blackPlayerDepth),
+                                                    std::chrono::seconds(timeConstraintSeconds));
     gameManager->putAction(std::move(action));
 }
 

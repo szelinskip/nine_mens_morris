@@ -10,8 +10,11 @@
 namespace model {
 namespace ai {
 
-AlphaBetaPrunningAlg::AlphaBetaPrunningAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth)
-    : AiAlgorithm("AlphaBeta", who, std::move(evalFn))
+AlphaBetaPrunningAlg::AlphaBetaPrunningAlg(const PlayerColor who,
+                                           std::unique_ptr<EvalFunction> evalFn,
+                                           const uint32_t depth,
+                                           const std::chrono::seconds searchTimeLimit)
+    : AiAlgorithm("AlphaBeta", who, std::move(evalFn), searchTimeLimit)
     , depth(depth)
 {
 }
@@ -24,6 +27,7 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
 {
     visitedStates = 0;
     prunedStates = 0;
+    timeConstraintExceeded = false;
     // if below condition is true it means state provided for move make is already game over state
     if(gameState.isGameOverState())
         return;
@@ -33,6 +37,10 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
     int alpha = std::numeric_limits<int>::min();
     int beta = std::numeric_limits<int>::max();
     uint32_t index = 0;
+
+    // start time measure
+    startAlgTp = SteadyClock::now();
+
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
 
 //    std::stable_sort(possibleStates.begin(),
@@ -78,7 +86,7 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
                                                           bool isMaximizing)
 {
     visitedStates++;
-    if(currentDepth == depth || gameState.isGameOverState())
+    if(currentDepth == depth || gameState.isGameOverState() || checkTimeConstraint())
         return evaluate(gameState);
 
     if(isMaximizing)

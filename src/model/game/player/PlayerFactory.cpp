@@ -14,8 +14,9 @@
 
 namespace model {
 
-PlayerFactory::PlayerFactory(tools::Logger& logger)
-    : logger(logger)
+PlayerFactory::PlayerFactory(tools::Logger& logger, const std::chrono::seconds timeConstraint)
+    : timeConstraint(timeConstraint)
+    , logger(logger)
 {
 }
 
@@ -73,9 +74,9 @@ std::unique_ptr<Player> PlayerFactory::makeComputerPlayer(GameManager& gameManag
     }
     std::unique_ptr<ai::AiAlgorithm> aiAlg;
     if(algType == "MinMax")
-        aiAlg = std::make_unique<ai::MinMaxAlg>(color, std::move(evalFn), playerDepth);
+        aiAlg = std::make_unique<ai::MinMaxAlg>(color, std::move(evalFn), playerDepth, timeConstraint);
     else  // (algType == "AlphaBeta")
-        aiAlg = std::make_unique<ai::AlphaBetaPrunningAlg>(color, std::move(evalFn), playerDepth);
+        aiAlg = std::make_unique<ai::AlphaBetaPrunningAlg>(color, std::move(evalFn), playerDepth, timeConstraint);
 
     return std::make_unique<ComputerPlayer>(gameManager, name, color, std::move(aiAlg), logger);
 }

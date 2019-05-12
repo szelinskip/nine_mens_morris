@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstdint>
 
 #include "AiAlgorithm.hpp"
@@ -12,7 +13,10 @@ namespace ai {
 class AlphaBetaPrunningAlg : public AiAlgorithm
 {
 public:
-    AlphaBetaPrunningAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth);
+    AlphaBetaPrunningAlg(const PlayerColor who,
+                         std::unique_ptr<EvalFunction> evalFn,
+                         const uint32_t depth,
+                         const std::chrono::seconds searchTimeLimit);
     virtual ~AlphaBetaPrunningAlg() override;
 
     AlphaBetaPrunningAlg() = delete;

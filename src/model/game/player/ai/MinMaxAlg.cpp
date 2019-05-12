@@ -9,8 +9,13 @@
 namespace model {
 namespace ai {
 
-MinMaxAlg::MinMaxAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth)
-    : AiAlgorithm("MinMax", who, std::move(evalFn))
+using namespace std::chrono_literals;
+
+MinMaxAlg::MinMaxAlg(const PlayerColor who,
+                     std::unique_ptr<EvalFunction> evalFn,
+                     const uint32_t depth,
+                     const std::chrono::seconds searchTimeLimit)
+    : AiAlgorithm("MinMax", who, std::move(evalFn), searchTimeLimit)
     , depth(depth)
 {
 }
@@ -22,6 +27,7 @@ MinMaxAlg &MinMaxAlg::operator=(MinMaxAlg &&) = default;
 void MinMaxAlg::makeMove(GameState& gameState)
 {
     visitedStates = 0;
+    timeConstraintExceeded = false;
     // if below condition is true it means state provided for move make is already game over state
     if(gameState.isGameOverState())
         return;
@@ -29,6 +35,10 @@ void MinMaxAlg::makeMove(GameState& gameState)
     // maximizing
     int maxEval = std::numeric_limits<int>::min();
     uint32_t index = 0;
+
+    // start time measure
+    startAlgTp = SteadyClock::now();
+
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
 
     if(possibleStates.size() == 0)
@@ -57,7 +67,7 @@ std::string MinMaxAlg::getInfo() const
 int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, bool isMaximizing)
 {
     visitedStates++;
-    if(currentDepth == depth || gameState.isGameOverState())
+    if(currentDepth == depth || gameState.isGameOverState() || checkTimeConstraint())
         return evaluate(gameState);
 
     if(isMaximizing)

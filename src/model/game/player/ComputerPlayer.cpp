@@ -27,6 +27,7 @@ bool ComputerPlayer::makeMove(GameState& state)
     aiAlg->makeMove(state);
     visitedStates = aiAlg->getVisitedStates();
     prunedStates = aiAlg->getPrunedStates();
+    searchTimeExceeded = aiAlg->wasSearchTimeExceeded();
     auto action = std::make_unique<ActionMoveDone>(state.getLastMove());
     gameManager.putAction(std::move(action));
     return true;
