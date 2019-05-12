@@ -53,6 +53,8 @@ SOURCES += \
         src/model/game/player/ai/EvalFunction.cpp \
         src/model/game/player/ai/EvalFnLeftCheckersDiff.cpp \
         src/model/game/player/ai/EvalFnGenericLambda.cpp \
+        src/model/game/player/ai/EvalFnLeftCheckersDiffAndMorris.cpp \
+        src/model/game/player/ai/EvalFnCheckersArrangement.cpp \
         src/model/game/player/ai/MinMaxAlg.cpp \
         src/model/game/player/ai/AlphaBetaPrunningAlg.cpp \
         \
@@ -87,6 +89,8 @@ HEADERS += \
         src/model/game/player/ai/EvalFunction.hpp \
         src/model/game/player/ai/EvalFnLeftCheckersDiff.hpp \
         src/model/game/player/ai/EvalFnGenericLambda.hpp \
+        src/model/game/player/ai/EvalFnLeftCheckersDiffAndMorris.hpp \
+        src/model/game/player/ai/EvalFnCheckersArrangement.hpp \
         src/model/game/player/ai/MinMaxAlg.hpp \
         src/model/game/player/ai/AlphaBetaPrunningAlg.hpp \
         \

@@ -34,7 +34,12 @@ public:
                            const uint32_t blackLeftCheckersOnBoard,
                            const uint32_t whiteCheckersKilledByBlack,
                            const uint32_t blackCheckersKilledByWhite);
-    void afterTurnActions(std::chrono::milliseconds elapsed, const Move& lastMove);
+
+    void afterTurnActions(std::chrono::milliseconds elapsed,
+                          const Move& lastMove,
+                          const uint32_t turnNum,
+                          const bool timeConstraintExceeded);
+
     void playersTurnAction(const Player* currentPlayer);
     void gameFinishedActions(const Player* winner);
 

@@ -31,7 +31,10 @@ void GameManager::beforeTurnActions(const uint32_t /*turnNum*/,
 {
 }
 
-void GameManager::afterTurnActions(std::chrono::milliseconds /*elapsed*/, const Move& /*lastMove*/)
+void GameManager::afterTurnActions(std::chrono::milliseconds /*elapsed*/,
+                                   const Move& /*lastMove*/,
+                                   const uint32_t /*turnNum*/,
+                                   const bool /*timeConstraintExceeded*/)
 {
 }
 

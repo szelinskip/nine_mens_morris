@@ -11,6 +11,7 @@
 #include <src/model/game/player/Player.hpp>
 
 using namespace model;
+using namespace std::chrono_literals;
 
 int main()
 {
@@ -22,10 +23,10 @@ int main()
     model::GameManager gameManager;
 
 
-    PlayerFactory factory(logger);
+    PlayerFactory factory(logger, 0s);
 
     PlayerType whitePlayerType = convertStringToPlayerType("AI AlphaBeta");
-    PlayerHeuristic whitePlayerHeuristic = convertStringToPlayerHeuristic("Left checkers diff");
+    PlayerHeuristic whitePlayerHeuristic = convertStringToPlayerHeuristic("Checkers arrangement");
     uint32_t whitePlayerDepth = 5;
 
     PlayerType blackPlayerType = convertStringToPlayerType("AI AlphaBeta");
