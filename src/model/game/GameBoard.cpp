@@ -129,8 +129,42 @@ std::vector<std::string> GameBoard::getFreeFields() const
 
 bool GameBoard::lastMoveFormedMill() const
 {
-    auto& field = boardBase.at(lastMove.toField);
+    const auto& field = boardBase.at(lastMove.toField);
     return field.rowFieldLies->isMill() || field.columnFieldLies->isMill();
+}
+
+bool GameBoard::lastMoveBlockedMill() const
+{
+    const auto& field = boardBase.at(lastMove.toField);
+    const auto& rowFields = field.rowFieldLies->fieldsInRow;
+    bool blockedMillRow = (rowFields[0]->colorOnField == rowFields[1]->colorOnField &&
+                           rowFields[2] == &field &&
+                           rowFields[0]->colorOnField != PlayerColor::None &&
+                           rowFields[0]->colorOnField != field.colorOnField) ||
+                          (rowFields[1]->colorOnField == rowFields[2]->colorOnField &&
+                           rowFields[0] == &field &&
+                           rowFields[1]->colorOnField != PlayerColor::None &&
+                           rowFields[1]->colorOnField != field.colorOnField) ||
+                          (rowFields[0]->colorOnField == rowFields[2]->colorOnField &&
+                           rowFields[1] == &field &&
+                           rowFields[0]->colorOnField != PlayerColor::None &&
+                           rowFields[0]->colorOnField != field.colorOnField);
+
+    const auto& columnFields = field.columnFieldLies->fieldsInColumn;
+    bool blockedMillColumn = (columnFields[0]->colorOnField == columnFields[1]->colorOnField &&
+                              columnFields[2] == &field &&
+                              columnFields[0]->colorOnField != PlayerColor::None &&
+                              columnFields[0]->colorOnField != field.colorOnField) ||
+                             (columnFields[1]->colorOnField == columnFields[2]->colorOnField &&
+                              columnFields[0] == &field &&
+                              columnFields[1]->colorOnField != PlayerColor::None &&
+                              columnFields[1]->colorOnField != field.colorOnField) ||
+                             (columnFields[0]->colorOnField == columnFields[2]->colorOnField &&
+                              columnFields[1] == &field &&
+                              columnFields[0]->colorOnField != PlayerColor::None &&
+                              columnFields[0]->colorOnField != field.colorOnField);
+
+    return blockedMillRow || blockedMillColumn;
 }
 
 std::vector<std::string> GameBoard::getCheckersWithColor(const PlayerColor color) const
@@ -220,6 +254,45 @@ bool GameBoard::areNeighbours(const std::string& field1, const std::string& fiel
     }
     else
         return false;
+}
+
+std::vector<std::string> GameBoard::getTakenNeighboursByColor(const std::string &field, const PlayerColor who) const
+{
+    std::vector<std::string> freeNeighbours;
+    const Field* fieldPtr = &boardBase.at(field);
+    const auto& fieldsInRow = fieldPtr->rowFieldLies->fieldsInRow;
+    for(const auto& fieldInRow : fieldsInRow)
+    {
+        if(fieldInRow == fieldPtr)
+            continue;
+        if(fieldInRow->colorOnField == who)
+        {
+            if(areNeighbours(field, fieldInRow->position))
+                freeNeighbours.push_back(fieldInRow->position);
+        }
+    }
+    const auto& fieldsInColumn = fieldPtr->columnFieldLies->fieldsInColumn;
+    for(const auto& fieldInColumn : fieldsInColumn)
+    {
+        if(fieldInColumn == fieldPtr)
+            continue;
+        if(fieldInColumn->colorOnField == who)
+        {
+            if(areNeighbours(field, fieldInColumn->position))
+                freeNeighbours.push_back(fieldInColumn->position);
+        }
+    }
+    return freeNeighbours;
+}
+
+const std::array<Row, 8>& GameBoard::getRows() const
+{
+    return rows;
+}
+
+const std::array<Column, 8> &GameBoard::getColumns() const
+{
+    return columns;
 }
 
 const Move &GameBoard::getLastMove() const

@@ -20,6 +20,10 @@ PlayerHeuristic convertStringToPlayerHeuristic(const std::string &playerHeuristi
         return PlayerHeuristic::None;
     else if(playerHeuristicStr == "Left checkers diff")
         return PlayerHeuristic::LeftCheckersDiff;
+    else if(playerHeuristicStr == "Left checkers diff and morris")
+        return PlayerHeuristic::LeftCheckersDiffAndMorris;
+    else if(playerHeuristicStr == "Checkers arrangement")
+        return PlayerHeuristic::CheckersArrangement;
     else
         return PlayerHeuristic::Unsupported;
 }

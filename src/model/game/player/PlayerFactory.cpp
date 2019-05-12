@@ -6,6 +6,8 @@
 #include <src/model/game/GameManager.hpp>
 #include "ai/EvalFunction.hpp"
 #include "ai/EvalFnLeftCheckersDiff.hpp"
+#include "ai/EvalFnLeftCheckersDiffAndMorris.hpp"
+#include "ai/EvalFnCheckersArrangement.hpp"
 #include "ai/AiAlgorithm.hpp"
 #include "ai/MinMaxAlg.hpp"
 #include "ai/AlphaBetaPrunningAlg.hpp"
@@ -58,6 +60,12 @@ std::unique_ptr<Player> PlayerFactory::makeComputerPlayer(GameManager& gameManag
     {
         case PlayerHeuristic::LeftCheckersDiff:
             evalFn = std::make_unique<ai::EvalFnLeftCheckersDiff>();
+            break;
+        case PlayerHeuristic::LeftCheckersDiffAndMorris:
+            evalFn = std::make_unique<ai::EvalFnLeftCheckersDiffAndMorris>();
+            break;
+        case PlayerHeuristic::CheckersArrangement:
+            evalFn = std::make_unique<ai::EvalFnCheckersArrangement>();
             break;
         default:
             evalFn = nullptr;

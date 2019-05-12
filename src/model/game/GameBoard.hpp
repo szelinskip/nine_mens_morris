@@ -29,10 +29,14 @@ public:
     bool operator==(const GameBoard& other) const;
     std::vector<std::string> getFreeFields() const;
     bool lastMoveFormedMill() const;
+    bool lastMoveBlockedMill() const;
     std::vector<std::string> getCheckersWithColor(const PlayerColor color) const;
     bool isCheckerInMill(const std::string& field) const;
     std::vector<std::string> getFreeNeighbours(const std::string& field) const;
     bool areNeighbours(const std::string& field1, const std::string& field2) const;
+    std::vector<std::string> getTakenNeighboursByColor(const std::string& field, const PlayerColor who) const;
+    const std::array<Row, 8>& getRows() const;
+    const std::array<Column, 8>& getColumns() const;
 
     const Move& getLastMove() const;
 

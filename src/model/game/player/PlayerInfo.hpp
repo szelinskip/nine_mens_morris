@@ -18,6 +18,8 @@ enum class PlayerHeuristic
 {
     None,
     LeftCheckersDiff,
+    LeftCheckersDiffAndMorris,
+    CheckersArrangement,
     Unsupported,
 };
 

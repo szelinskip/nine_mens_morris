@@ -191,6 +191,11 @@ bool GameState::lastMoveCreatedMill() const
     return board.lastMoveFormedMill();
 }
 
+bool GameState::lastMoveBlockedMill() const
+{
+    return board.lastMoveBlockedMill();
+}
+
 int GameState::getLeftCheckersOnBoard(const PlayerColor who) const
 {
     if(who == PlayerColor::White)
@@ -269,6 +274,95 @@ void GameState::setGameOverDueToNoPossibleMovements()
 bool GameState::isGameOverDueToNoPossibleMovements() const
 {
     return gameOverDueToNoPossibleMovements;
+}
+
+int GameState::getPlayerNumOf1ToMorrisCombinations(const PlayerColor who) const
+{
+    int numOf1ToMorrisCombinations = 0;
+    const auto& rows = board.getRows();
+    const auto& columns = board.getColumns();
+    for(const auto& row : rows)
+    {
+        if(row.oneLeftToMorris() && row.getColorDominatingInRow() == who)
+            numOf1ToMorrisCombinations++;
+    }
+    for(const auto& column : columns)
+    {
+        if(column.oneLeftToMorris() && column.getColorDominatingInColumn() == who)
+            numOf1ToMorrisCombinations++;
+    }
+    return numOf1ToMorrisCombinations;
+}
+
+int GameState::getPlayerNumOfMorrises(const PlayerColor who) const
+{
+    int numOfMorrises = 0;
+    const auto& rows = board.getRows();
+    const auto& columns = board.getColumns();
+    for(const auto& row : rows)
+    {
+        if(row.isMill() && row.fieldsInRow[0]->colorOnField == who)
+            numOfMorrises++;
+    }
+    for(const auto& column : columns)
+    {
+        if(column.isMill() && column.fieldsInColumn[0]->colorOnField == who)
+            numOfMorrises++;
+    }
+    return numOfMorrises;
+}
+
+int GameState::getNumOfBlockedCheckers(const PlayerColor who) const
+{
+    int blockedCheckers = 0;
+    auto checkers = board.getCheckersWithColor(who);
+    for(const auto& checker : checkers)
+    {
+        auto freeNeighbours = board.getFreeNeighbours(checker);
+        if(freeNeighbours.size() == 0)
+            blockedCheckers++;
+    }
+    return blockedCheckers;
+}
+
+PlayerColor GameState::whoIsWinnerIfGameOver() const
+{
+    if(!isGameOverState())
+        return PlayerColor::None;
+
+    if(whiteLeftCheckersOnBoard < 3)
+        return PlayerColor::Black;
+    else if(blackLeftCheckersOnBoard < 3)
+        return PlayerColor::White;
+    else if(gameOverDueToNoPossibleMovements)
+    {
+        auto whiteCheckers = board.getCheckersWithColor(PlayerColor::White);
+        bool leftWhiteCheckersMoves = false;
+        for(const auto& checker : whiteCheckers)
+        {
+            auto freeNeighbours = board.getFreeNeighbours(checker);
+            if(freeNeighbours.size() > 0)
+                leftWhiteCheckersMoves = true;
+        }
+
+        auto blackCheckers = board.getCheckersWithColor(PlayerColor::Black);
+        bool leftBlackCheckersMoves = false;
+        for(const auto& checker : blackCheckers)
+        {
+            auto freeNeighbours = board.getFreeNeighbours(checker);
+            if(freeNeighbours.size() > 0)
+                leftBlackCheckersMoves = true;
+        }
+
+        if(leftWhiteCheckersMoves)
+            return PlayerColor::White;
+        else if(leftBlackCheckersMoves)
+            return PlayerColor::Black;
+        else
+            throw std::runtime_error("Both players have possible movements");
+    }
+    else
+        throw std::runtime_error("Invalid game over state, no checkers condition nor possible movements");
 }
 
 std::string GameState::getStrRepr() const

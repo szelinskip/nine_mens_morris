@@ -837,6 +837,16 @@ p, li { white-space: pre-wrap; }
       <string>Left checkers diff</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Left checkers diff and morris</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Checkers arrangement</string>
+     </property>
+    </item>
    </widget>
    <widget class="QComboBox" name="blackPlayerHeuristicCombo">
     <property name="geometry">
@@ -850,6 +860,16 @@ p, li { white-space: pre-wrap; }
     <item>
      <property name="text">
       <string>Left checkers diff</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Left checkers diff and morris</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Checkers arrangement</string>
      </property>
     </item>
     <item>

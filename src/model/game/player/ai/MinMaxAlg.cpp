@@ -12,7 +12,6 @@ namespace ai {
 MinMaxAlg::MinMaxAlg(const PlayerColor who, std::unique_ptr<EvalFunction> evalFn, const uint32_t depth)
     : AiAlgorithm("MinMax", who, std::move(evalFn))
     , depth(depth)
-    , visitedStates(0)
 {
 }
 

@@ -60,6 +60,7 @@ public:
     uint32_t getBlackCheckersKilledByWhite() const;
 
     bool lastMoveCreatedMill() const;
+    bool lastMoveBlockedMill() const;
     int getLeftCheckersOnBoard(const PlayerColor who) const;
     const Move& getLastMove() const;
     bool isInFirstStage(const PlayerColor who) const;
@@ -67,6 +68,11 @@ public:
 
     void setGameOverDueToNoPossibleMovements();
     bool isGameOverDueToNoPossibleMovements() const;
+
+    int getPlayerNumOf1ToMorrisCombinations(const PlayerColor who) const;
+    int getPlayerNumOfMorrises(const PlayerColor who) const;
+    int getNumOfBlockedCheckers(const PlayerColor who) const;
+    PlayerColor whoIsWinnerIfGameOver() const;
 
     std::string getStrRepr() const;
 

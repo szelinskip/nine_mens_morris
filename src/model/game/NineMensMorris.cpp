@@ -98,7 +98,6 @@ void NineMensMorris::startGame()
             gameOver = true;
             if(!isGameEndedWithDraw())
             {
-
                 if(!gameState.isGameOverDueToNoPossibleMovements())
                     winner = currentPlayer;
                 else

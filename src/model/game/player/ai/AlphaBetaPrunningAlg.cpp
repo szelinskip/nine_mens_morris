@@ -35,6 +35,13 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
     uint32_t index = 0;
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
 
+//    std::stable_sort(possibleStates.begin(),
+//                     possibleStates.end(),
+//                     [this](const auto& lhs, const auto& rhs)
+//                     {
+//                         return evaluate(lhs) > evaluate(rhs);
+//                     });
+
     if(possibleStates.size() == 0)
     {
         gameState.setGameOverDueToNoPossibleMovements();
@@ -78,6 +85,14 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
     {
         int maxEval = std::numeric_limits<int>::min();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
+
+//        std::stable_sort(possibleStates.begin(),
+//                         possibleStates.end(),
+//                         [this](const auto& lhs, const auto& rhs)
+//                         {
+//                             return evaluate(lhs) > evaluate(rhs);
+//                         });
+
         for(auto i = 0u; i < possibleStates.size(); i++)
         {
             int eval = minMaxEnhancedAlphaBetaPrunning(possibleStates[i], currentDepth + 1, alpha, beta, false);
@@ -95,6 +110,14 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
     {
         int minEval = std::numeric_limits<int>::max();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
+
+//        std::stable_sort(possibleStates.begin(),
+//                         possibleStates.end(),
+//                         [this](const auto& lhs, const auto& rhs)
+//                         {
+//                             return evaluate(lhs) < evaluate(rhs);
+//                         });
+
         for(auto i = 0u; i < possibleStates.size(); i++)
         {
             int eval = minMaxEnhancedAlphaBetaPrunning(possibleStates[i], currentDepth + 1, alpha, beta, true);

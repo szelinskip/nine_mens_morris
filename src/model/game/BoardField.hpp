@@ -14,12 +14,16 @@ struct Row
 {
     std::array<Field*, 3> fieldsInRow;
     bool isMill() const;
+    bool oneLeftToMorris() const;
+    PlayerColor getColorDominatingInRow() const;
 };
 
 struct Column
 {
     std::array<Field*, 3> fieldsInColumn;
     bool isMill() const;
+    bool oneLeftToMorris() const;
+    PlayerColor getColorDominatingInColumn() const;
 };
 
 struct Field

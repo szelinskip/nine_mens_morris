@@ -22,6 +22,8 @@ SOURCES += \
         $$PWD/model/game/player/ai/AiAlgorithm.cpp \
         $$PWD/model/game/player/ai/EvalFunction.cpp \
         $$PWD/model/game/player/ai/EvalFnLeftCheckersDiff.cpp \
+        $$PWD/model/game/player/ai/EvalFnLeftCheckersDiffAndMorris.cpp \
+        $$PWD/model/game/player/ai/EvalFnCheckersArrangement.cpp \
         $$PWD/model/game/player/ai/EvalFnGenericLambda.cpp \
         $$PWD/model/game/player/ai/MinMaxAlg.cpp \
         $$PWD/model/game/player/ai/AlphaBetaPrunningAlg.cpp \
@@ -63,6 +65,8 @@ HEADERS += \
         $$PWD/model/game/player/ai/AiAlgorithm.hpp \
         $$PWD/model/game/player/ai/EvalFunction.hpp \
         $$PWD/model/game/player/ai/EvalFnLeftCheckersDiff.hpp \
+        $$PWD/model/game/player/ai/EvalFnLeftCheckersDiffAndMorris.hpp \
+        $$PWD/model/game/player/ai/EvalFnCheckersArrangement.hpp \
         $$PWD/model/game/player/ai/EvalFnGenericLambda.hpp \
         $$PWD/model/game/player/ai/MinMaxAlg.hpp \
         $$PWD/model/game/player/ai/AlphaBetaPrunningAlg.hpp \
