@@ -11,7 +11,7 @@ std::string colorToStr(const model::PlayerColor color)
         case PlayerColor::Black :
             return "B";
         default:
-            return "X";
+            return "_";
     }
 }
 

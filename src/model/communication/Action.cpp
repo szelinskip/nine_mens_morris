@@ -154,4 +154,15 @@ ActionGuiOff& ActionGuiOff::operator=(const ActionGuiOff &) = default;
 ActionGuiOff::ActionGuiOff(ActionGuiOff &&) = default;
 ActionGuiOff& ActionGuiOff::operator=(ActionGuiOff&&) = default;
 
+ActionWaitOnGame::ActionWaitOnGame()
+    : Action(ActionType::WaitOnGame)
+{
+}
+
+ActionWaitOnGame::~ActionWaitOnGame() = default;
+ActionWaitOnGame::ActionWaitOnGame(const ActionWaitOnGame &) = default;
+ActionWaitOnGame& ActionWaitOnGame::operator=(const ActionWaitOnGame &) = default;
+ActionWaitOnGame::ActionWaitOnGame(ActionWaitOnGame &&) = default;
+ActionWaitOnGame& ActionWaitOnGame::operator=(ActionWaitOnGame&&) = default;
+
 } // namespace model

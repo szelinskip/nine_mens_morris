@@ -32,7 +32,8 @@ public:
 
     void userInputField(const std::string& boardField);
     void updateUI(const Move& move);
-    void updateUI(const uint32_t whiteLeftCheckersToPut,
+    void updateUI(const uint32_t turnNum,
+                  const uint32_t whiteLeftCheckersToPut,
                   const uint32_t blackLeftCheckersToPut,
                   const uint32_t whiteLeftCheckersOnBoard,
                   const uint32_t blackLeftCheckersOnBoard,
@@ -53,6 +54,7 @@ public:
     void resumeGame();
     void guiOnOff(const bool isGuiOn);
     void goingDead();
+    void waitOnGame();
 
     void gameStarted();
     void gamePaused();

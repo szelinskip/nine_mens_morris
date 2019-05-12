@@ -72,7 +72,8 @@ void MasterController::updateUI(const Move& move)
     }
 }
 
-void MasterController::updateUI(const uint32_t whiteLeftCheckersToPut,
+void MasterController::updateUI(const uint32_t turnNum,
+                                const uint32_t whiteLeftCheckersToPut,
                                 const uint32_t blackLeftCheckersToPut,
                                 const uint32_t whiteLeftCheckersOnBoard,
                                 const uint32_t blackLeftCheckersOnBoard,
@@ -80,6 +81,7 @@ void MasterController::updateUI(const uint32_t whiteLeftCheckersToPut,
                                 const uint32_t blackCheckersKilledByWhite)
 {
     QMetaObject::invokeMethod(mainWindow, "updateGameState",
+                              Q_ARG(uint32_t, turnNum),
                               Q_ARG(uint32_t, whiteLeftCheckersToPut),
                               Q_ARG(uint32_t, blackLeftCheckersToPut),
                               Q_ARG(uint32_t, whiteLeftCheckersOnBoard),
@@ -182,6 +184,13 @@ void MasterController::guiOnOff(const bool isGuiOn)
 void MasterController::goingDead()
 {
     gameManager->stop();
+}
+
+void MasterController::waitOnGame()
+{
+    logger.log("%s(): waitOnGame", __FUNCTION__);
+    auto action = std::make_unique<ActionWaitOnGame>();
+    gameManager->putAction(std::move(action));
 }
 
 void MasterController::gameStarted()

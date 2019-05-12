@@ -16,6 +16,7 @@ enum class ActionType : uint8_t
     GameResume,
     GuiOn,
     GuiOff,
+    WaitOnGame,
 };
 
 constexpr const char* actionTypeToString(const ActionType actionType)

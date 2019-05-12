@@ -14,7 +14,7 @@ namespace model {
 
 using namespace std::chrono_literals;
 
-GameManager::GameManager(tools::Logger& logger)
+GameManager::GameManager(tools::Logger& logger, const bool shouldIntroducePauseBetweenPlayers)
     : pauseBetweenPlayers(500ms)
     , gameRunning(false)
     , shouldRunLoop(false)
@@ -25,8 +25,19 @@ GameManager::GameManager(tools::Logger& logger)
     , shouldStop(false)
     , shouldPause(false)
     , shouldUpdateUi(true)
+    , shouldIntroducePauseBetweenPlayers(shouldIntroducePauseBetweenPlayers)
     , logger(logger)
 {
+}
+
+GameManager::~GameManager()
+{
+    shouldRunLoop = false;
+    if(gameThread.joinable())
+        gameThread.join();
+
+    if(actionsLoopThread.joinable())
+        actionsLoopThread.join();
 }
 
 void GameManager::run()
@@ -47,16 +58,6 @@ void GameManager::stop()
 bool GameManager::shouldStopGame() const
 {
     return shouldTerminate || shouldStop;
-}
-
-GameManager::~GameManager()
-{
-    shouldRunLoop = false;
-    if(gameThread.joinable())
-        gameThread.join();
-
-    if(actionsLoopThread.joinable())
-        actionsLoopThread.join();
 }
 
 void GameManager::setController(controller::MasterController* controller)
@@ -83,7 +84,8 @@ Move GameManager::getInput()
     return userInputMove;
 }
 
-void GameManager::beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
+void GameManager::beforeTurnActions(const uint32_t turnNum,
+                                    const uint32_t whiteLeftCheckersToPut,
                                     const uint32_t blackLeftCheckersToPut,
                                     const uint32_t whiteLeftCheckersOnBoard,
                                     const uint32_t blackLeftCheckersOnBoard,
@@ -93,7 +95,8 @@ void GameManager::beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
     logger.log("%s()", __FUNCTION__);
     if(shouldUpdateUi)
     {
-        controller->updateUI(whiteLeftCheckersToPut,
+        controller->updateUI(turnNum,
+                             whiteLeftCheckersToPut,
                              blackLeftCheckersToPut,
                              whiteLeftCheckersOnBoard,
                              blackLeftCheckersOnBoard,
@@ -109,7 +112,9 @@ void GameManager::afterTurnActions(std::chrono::milliseconds elapsed, const Move
 {
     logger.log("%s()", __FUNCTION__);
     controller->updateLastMove(elapsed, lastMove);
-    logger.log("%s() sleeping for: %ull ms", __FUNCTION__, pauseBetweenPlayers.count());
+    if(!shouldIntroducePauseBetweenPlayers)
+        return;
+    logger.log("%s() sleeping for: %llu ms", __FUNCTION__, pauseBetweenPlayers.count());
     std::this_thread::sleep_for(pauseBetweenPlayers);
     logger.log("%s() end sleep", __FUNCTION__);
 }
@@ -127,6 +132,22 @@ void GameManager::gameFinishedActions(const Player* winner)
     if(winner != nullptr)
         winnerName = winner->getName();
     controller->gameFinishedStatus(winnerName);
+}
+
+void GameManager::waitOnGameManager()
+{
+    if(gameThread.joinable())
+        gameThread.join();
+
+    shouldRunLoop = false;
+
+    if(actionsLoopThread.joinable())
+        actionsLoopThread.join();
+}
+
+void GameManager::waitUntilGameNotStarted()
+{
+    while(!gameRunning);
 }
 
 void GameManager::runningLoop()
@@ -228,6 +249,9 @@ void GameManager::handleAction(ActionPtr action)
             break;
         case ActionType::GuiOn:
             handleGuiOn();
+            break;
+        case ActionType::WaitOnGame:
+            handleWaitOnGame();
             break;
         default:
             throw UnsupportedActionType("Type: " + std::to_string(static_cast<int>(type)));
@@ -339,6 +363,10 @@ void GameManager::handleGuiOn()
 {
     logger.log("%s()", __FUNCTION__);
     shouldUpdateUi = true;
+}
+
+void GameManager::handleWaitOnGame()
+{
 }
 
 Move GameManager::buildInputMove()

@@ -48,7 +48,8 @@ public slots:
     void guiOnOffClicked();
     void setCheckerOnField(const std::string& boardField, CheckerType checker);
     void resetFieldBackground(const std::string& boardField, CheckerType checker);
-    void updateGameState(const uint32_t whiteLeftCheckersToPut,
+    void updateGameState(const uint32_t turnNum,
+                         const uint32_t whiteLeftCheckersToPut,
                          const uint32_t blackLeftCheckersToPut,
                          const uint32_t whiteLeftCheckersOnBoard,
                          const uint32_t blackLeftCheckersOnBoard,

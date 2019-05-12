@@ -23,12 +23,17 @@ public:
     AiAlgorithm& operator=(AiAlgorithm&&);
 
     virtual void makeMove(GameState& gameState) = 0;
+    virtual uint32_t getVisitedStates() const;
+    virtual uint32_t getPrunedStates() const;
     virtual std::string getInfo() const;
 
 protected:
     std::string name;
     PlayerColor who;
     std::unique_ptr<EvalFunction> evalFn;
+
+    uint32_t visitedStates;
+    uint32_t prunedStates;
 };
 
 } // namespace ai

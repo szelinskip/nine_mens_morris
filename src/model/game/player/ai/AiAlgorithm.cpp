@@ -7,17 +7,29 @@ AiAlgorithm::AiAlgorithm(const std::string& name, const PlayerColor who, std::un
     : name(name)
     , who(who)
     , evalFn(std::move(evalFn))
+    , visitedStates(0)
+    , prunedStates(0)
 {
+}
+
+AiAlgorithm::~AiAlgorithm() = default;
+AiAlgorithm::AiAlgorithm(AiAlgorithm &&) = default;
+AiAlgorithm &AiAlgorithm::operator=(AiAlgorithm &&) = default;
+
+uint32_t AiAlgorithm::getVisitedStates() const
+{
+    return visitedStates;
+}
+
+uint32_t AiAlgorithm::getPrunedStates() const
+{
+    return prunedStates;
 }
 
 std::string AiAlgorithm::getInfo() const
 {
     return name + ", eval fn: " + evalFn->getInfo();
 }
-
-AiAlgorithm::~AiAlgorithm() = default;
-AiAlgorithm::AiAlgorithm(AiAlgorithm &&) = default;
-AiAlgorithm &AiAlgorithm::operator=(AiAlgorithm &&) = default;
 
 } // namespace ai
 } // namespace model

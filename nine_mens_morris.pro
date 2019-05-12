@@ -30,7 +30,8 @@ QMAKE_CXXFLAGS += \
             -Werror
 
 LIBS += \
-        -lstdc++fs
+        -lstdc++fs \
+        -lprofiler
 
 #SOURCES += \
 #        ./src/main.cpp \

@@ -11,6 +11,7 @@ GameState::GameState()
     , blackLeftCheckersOnBoard(0)
     , whiteCheckersKilledByBlack(0)
     , blackCheckersKilledByWhite(0)
+    , gameOverDueToNoPossibleMovements(false)
 {
 }
 
@@ -21,7 +22,8 @@ GameState::GameState(GameBoard&& board,
                      const uint8_t whiteLeftCheckersOnBoard,
                      const uint8_t blackLeftCheckersOnBoard,
                      const uint8_t whiteCheckersKilledByBlack,
-                     const uint8_t blackCheckersKilledByWhite)
+                     const uint8_t blackCheckersKilledByWhite,
+                     const bool gameOverDueToNoPossibleMovements)
     : board(std::move(board))
     , isFirstStage(isFirstStage)
     , whiteLeftCheckersToPut(whiteLeftCheckersToPut)
@@ -30,6 +32,7 @@ GameState::GameState(GameBoard&& board,
     , blackLeftCheckersOnBoard(blackLeftCheckersOnBoard)
     , whiteCheckersKilledByBlack(whiteCheckersKilledByBlack)
     , blackCheckersKilledByWhite(blackCheckersKilledByWhite)
+    , gameOverDueToNoPossibleMovements(gameOverDueToNoPossibleMovements)
 {
 
 }
@@ -48,6 +51,7 @@ GameState::GameState(const GameState &otherGameState,
     , blackLeftCheckersOnBoard(blackLeftCheckersOnBoard)
     , whiteCheckersKilledByBlack(whiteCheckersKilledByBlack)
     , blackCheckersKilledByWhite(blackCheckersKilledByWhite)
+    , gameOverDueToNoPossibleMovements(otherGameState.gameOverDueToNoPossibleMovements)
 {
 }
 
@@ -60,6 +64,7 @@ GameState::GameState(const GameState &otherGameState, GameBoard &&board)
     , blackLeftCheckersOnBoard(otherGameState.blackLeftCheckersOnBoard)
     , whiteCheckersKilledByBlack(otherGameState.whiteCheckersKilledByBlack)
     , blackCheckersKilledByWhite(otherGameState.blackCheckersKilledByWhite)
+    , gameOverDueToNoPossibleMovements(otherGameState.gameOverDueToNoPossibleMovements)
 {
 
 }
@@ -72,7 +77,7 @@ GameState& GameState::operator=(GameState&&) = default;
 
 bool GameState::isGameOverState() const
 {
-    if((whiteLeftCheckersOnBoard < 3 || blackLeftCheckersOnBoard < 3) && whiteLeftCheckersToPut == 0 && blackLeftCheckersToPut == 0)
+    if(gameOverDueToNoPossibleMovements || ((whiteLeftCheckersOnBoard < 3 || blackLeftCheckersOnBoard < 3) && whiteLeftCheckersToPut == 0 && blackLeftCheckersToPut == 0))
         return true;
     return false;
 }
@@ -256,6 +261,16 @@ void GameState::applyMove(const Move& move)
     }
 }
 
+void GameState::setGameOverDueToNoPossibleMovements()
+{
+    gameOverDueToNoPossibleMovements = true;
+}
+
+bool GameState::isGameOverDueToNoPossibleMovements() const
+{
+    return gameOverDueToNoPossibleMovements;
+}
+
 std::string GameState::getStrRepr() const
 {
     std::string boardStr = board.getStrRepr();
@@ -310,7 +325,8 @@ std::vector<GameState> GameState::getFirstStageAvailableStates(const PlayerColor
                                 whiteLeftCheckersOnBoard,
                                 blackLeftCheckersOnBoard,
                                 this->whiteCheckersKilledByBlack,
-                                this->blackCheckersKilledByWhite);
+                                this->blackCheckersKilledByWhite,
+                                this->gameOverDueToNoPossibleMovements);
         if(!possibleState.lastMoveCreatedMill())
         {
             possibleStates.emplace_back(std::move(possibleState));
@@ -389,12 +405,14 @@ std::vector<GameState> GameState::getStatesAfterMillFormed(const GameState& mill
         whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard;
         blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard - 1;
         blackCheckersKilledByWhite = millState.blackCheckersKilledByWhite + 1;
+        whiteCheckersKilledByBlack = millState.whiteCheckersKilledByBlack;
     }
     else
     {
         whiteLeftCheckersOnBoard = millState.whiteLeftCheckersOnBoard - 1;
         blackLeftCheckersOnBoard = millState.blackLeftCheckersOnBoard;
         whiteCheckersKilledByBlack = millState.whiteCheckersKilledByBlack + 1;
+        blackCheckersKilledByWhite = millState.blackCheckersKilledByWhite;
     }
     for(const auto& checker : *checkersPossibleToTake)
     {

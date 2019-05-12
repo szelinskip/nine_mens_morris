@@ -1,5 +1,6 @@
 #include "AlphaBetaPrunningAlg.hpp"
 
+#include <algorithm>
 #include <limits>
 
 #include <src/model/game/GameState.hpp>
@@ -21,6 +22,8 @@ AlphaBetaPrunningAlg &AlphaBetaPrunningAlg::operator=(AlphaBetaPrunningAlg &&) =
 
 void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
 {
+    visitedStates = 0;
+    prunedStates = 0;
     // if below condition is true it means state provided for move make is already game over state
     if(gameState.isGameOverState())
         return;
@@ -31,13 +34,13 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
     int beta = std::numeric_limits<int>::max();
     uint32_t index = 0;
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
-//    std::cout << "Possible states (" << possibleStates.size() << ") at depth 0 from base state: " << std::endl;
-//    std::cout << gameState.getStrRepr() << std::endl;
-//    for(auto i = 0u; i < possibleStates.size(); i++)
-//    {
-//        std::cout << "num: " << (i+1) << std::endl;
-//        std::cout << possibleStates[i].getStrRepr() << std::endl;
-//    }
+
+    if(possibleStates.size() == 0)
+    {
+        gameState.setGameOverDueToNoPossibleMovements();
+        return;
+    }
+
     for(auto i = 0u; i < possibleStates.size(); i++)
     {
         int eval = minMaxEnhancedAlphaBetaPrunning(possibleStates[i], 1, alpha, beta, false);
@@ -48,7 +51,10 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
         }
         alpha = std::max(alpha, eval);
         if(beta <= alpha)
+        {
+            prunedStates += (possibleStates.size() - i - 1);
             break;
+        }
     }
     gameState = possibleStates[index];
 }
@@ -64,6 +70,7 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
                                                           int beta,
                                                           bool isMaximizing)
 {
+    visitedStates++;
     if(currentDepth == depth || gameState.isGameOverState())
         return evaluate(gameState);
 
@@ -71,20 +78,16 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
     {
         int maxEval = std::numeric_limits<int>::min();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
-//        std::cout << "Possible states (" << possibleStates.size() << ") at depth " << currentDepth << " from base state: " << std::endl;
-//        std::cout << gameState.getStrRepr() << std::endl;
-//        for(auto i = 0u; i < possibleStates.size(); i++)
-//        {
-//            std::cout << "num: " << (i+1) << std::endl;
-//            std::cout << possibleStates[i].getStrRepr() << std::endl;
-//        }
-        for(auto& possibleState : possibleStates)
+        for(auto i = 0u; i < possibleStates.size(); i++)
         {
-            int eval = minMaxEnhancedAlphaBetaPrunning(possibleState, currentDepth + 1, alpha, beta, false);
+            int eval = minMaxEnhancedAlphaBetaPrunning(possibleStates[i], currentDepth + 1, alpha, beta, false);
             maxEval = std::max(maxEval, eval);
             alpha = std::max(alpha, eval);
             if(beta <= alpha)
+            {
+                prunedStates += (possibleStates.size() - i - 1);
                 break;
+            }
         }
         return maxEval;
     }
@@ -92,20 +95,16 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
     {
         int minEval = std::numeric_limits<int>::max();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
-//        std::cout << "Possible states (" << possibleStates.size() << ") at depth " << currentDepth << " from base state: " << std::endl;
-//        std::cout << gameState.getStrRepr() << std::endl;
-//        for(auto i = 0u; i < possibleStates.size(); i++)
-//        {
-//            std::cout << "num: " << (i+1) << std::endl;
-//            std::cout << possibleStates[i].getStrRepr() << std::endl;
-//        }
-        for(auto& possibleState : possibleStates)
+        for(auto i = 0u; i < possibleStates.size(); i++)
         {
-            int eval = minMaxEnhancedAlphaBetaPrunning(possibleState, currentDepth + 1, alpha, beta, true);
+            int eval = minMaxEnhancedAlphaBetaPrunning(possibleStates[i], currentDepth + 1, alpha, beta, true);
             minEval = std::min(minEval, eval);
             beta = std::min(beta, eval);
             if(beta <= alpha)
+            {
+                prunedStates += (possibleStates.size() - i - 1);
                 break;
+            }
         }
         return minEval;
     }

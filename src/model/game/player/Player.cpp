@@ -9,6 +9,8 @@ Player::Player(GameManager& gameManager, const std::string& name, PlayerColor co
     , name(name)
     , color(color)
     , movesNumber(0)
+    , visitedStates(0)
+    , prunedStates(0)
     , logger(logger)
 {
 }
@@ -28,6 +30,16 @@ PlayerColor Player::getColor() const
 std::string Player::getInfo() const
 {
     return "Color: " + colorToStr(color) + ", name: " + name;
+}
+
+uint32_t Player::getVisitedStates() const
+{
+    return visitedStates;
+}
+
+uint32_t Player::getPrunedStates() const
+{
+    return prunedStates;
 }
 
 void Player::incrementMovesNumber()

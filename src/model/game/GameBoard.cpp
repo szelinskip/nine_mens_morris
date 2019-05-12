@@ -14,7 +14,7 @@ GameBoard::GameBoard()
                 {"5d", {"5d", PlayerColor::None, nullptr, nullptr}}, {"5e", {"5e", PlayerColor::None, nullptr, nullptr}},
                 {"6b", {"6b", PlayerColor::None, nullptr, nullptr}}, {"6d", {"6d", PlayerColor::None, nullptr, nullptr}},
                 {"6f", {"6f", PlayerColor::None, nullptr, nullptr}}, {"7a", {"7a", PlayerColor::None, nullptr, nullptr}},
-                {"7a", {"7a", PlayerColor::None, nullptr, nullptr}}, {"7g", {"7g", PlayerColor::None, nullptr, nullptr}}}
+                {"7d", {"7d", PlayerColor::None, nullptr, nullptr}}, {"7g", {"7g", PlayerColor::None, nullptr, nullptr}}}
 {
     makeFieldsRowsColumnsCoupling();
 }

@@ -1,7 +1,7 @@
 #include "NineMensMorris.hpp"
 
 #include "player/Player.hpp"
-#include "GameManager.hpp"
+#include <src/model/game/GameManager.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -36,10 +36,12 @@ void NineMensMorris::startGame()
     logger.log("%s()", __FUNCTION__);
     bool gameOver = false;
     Player* winner = nullptr;
+    auto gameStartTp = std::chrono::steady_clock::now();
     while(!gameOver && !gameManager->shouldStopGame())
     {
         turnNum++;
-        gameManager->beforeTurnActions(gameState.getWhiteLeftCheckersToPut(),
+        gameManager->beforeTurnActions(turnNum,
+                                       gameState.getWhiteLeftCheckersToPut(),
                                        gameState.getBlackLeftCheckersToPut(),
                                        gameState.getWhiteLeftCheckersOnBoard(),
                                        gameState.getBlackLeftCheckersOnBoard(),
@@ -64,16 +66,20 @@ void NineMensMorris::startGame()
             elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(moveDoneTp - startMoveTp);
             const auto& lastMove = gameState.getLastMove();
             gameMovesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
-                                "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s]",
+                                "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
+                                "visited states: %d, pruned states: %d",
                                 turnNum,
                                 currentPlayer->getName().c_str(),
                                 currentPlayer->getMovesNumber(),
                                 lastMove.fromField.c_str(),
                                 lastMove.toField.c_str(),
                                 lastMove.fieldOponentsCheckerTaken.c_str(),
-                                elapsed.count() / 1000.0);
+                                elapsed.count() / 1000.0,
+                                currentPlayer->getVisitedStates(),
+                                currentPlayer->getPrunedStates());
             gameStatesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
-                                 "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], game state:\n%s",
+                                 "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
+                                 "visited states: %d, pruned states: %d, game state:\n%s",
                                  turnNum,
                                  currentPlayer->getName().c_str(),
                                  currentPlayer->getMovesNumber(),
@@ -81,6 +87,8 @@ void NineMensMorris::startGame()
                                  lastMove.toField.c_str(),
                                  lastMove.fieldOponentsCheckerTaken.c_str(),
                                  elapsed.count() / 1000.0,
+                                 currentPlayer->getVisitedStates(),
+                                 currentPlayer->getPrunedStates(),
                                  gameState.getStrRepr().c_str());
             gameStatesHistory.emplace_back(gameState);
         }
@@ -89,12 +97,31 @@ void NineMensMorris::startGame()
             logger.log("%s(): game over condition TRUE", __FUNCTION__);
             gameOver = true;
             if(!isGameEndedWithDraw())
-                winner = currentPlayer;
+            {
+
+                if(!gameState.isGameOverDueToNoPossibleMovements())
+                    winner = currentPlayer;
+                else
+                    winner = getCurrentPlayer();
+            }
         }
         gameManager->afterTurnActions(elapsed, gameState.getLastMove());
     }
     if(gameOver)
         gameManager->gameFinishedActions(winner);
+    auto gameEndTp = std::chrono::steady_clock::now();
+    auto gameTimeElapsed = std::chrono::duration_cast<std::chrono::milliseconds>(gameEndTp - gameStartTp);
+    std::string winnerStr = "DRAW";
+    if(winner != nullptr)
+        winnerStr = winner->getName();
+    gameMovesLogger.log("%s(): winner: %s, total game time elapsed: %.3f [s]",
+                        __FUNCTION__,
+                        winnerStr.c_str(),
+                        gameTimeElapsed.count() / 1000.0);
+    gameStatesLogger.log("%s(): winner: %s, total game time elapsed: %.3f [s]",
+                         __FUNCTION__,
+                         winnerStr.c_str(),
+                         gameTimeElapsed.count() / 1000.0);
 }
 
 bool NineMensMorris::checkGameOverCondition() const

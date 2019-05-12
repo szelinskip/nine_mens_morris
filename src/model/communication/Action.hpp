@@ -175,4 +175,17 @@ public:
     ActionGuiOff& operator=(ActionGuiOff&&);
 };
 
+class ActionWaitOnGame : public Action
+{
+public:
+    ActionWaitOnGame();
+
+    virtual ~ActionWaitOnGame();
+
+    ActionWaitOnGame(const ActionWaitOnGame&);
+    ActionWaitOnGame& operator=(const ActionWaitOnGame&);
+    ActionWaitOnGame(ActionWaitOnGame&&);
+    ActionWaitOnGame& operator=(ActionWaitOnGame&&);
+};
+
 } // namespace model

@@ -30,7 +30,7 @@ void MainWindow::setLogger(tools::Logger* logger)
 
 void MainWindow::setCheckerOnField(const std::string& boardField, CheckerType checker)
 {
-    logger->log("%s(): boardField: ", __FUNCTION__, boardField.c_str());
+    logger->log("%s(): boardField: %s", __FUNCTION__, boardField.c_str());
     auto button = boardFieldToButton.at(boardField);
     button->setStyleSheet(
         styleProvider.buildStyleSheetCheckerWithBackground(checker, "rgb(52, 101, 164)"));
@@ -38,19 +38,21 @@ void MainWindow::setCheckerOnField(const std::string& boardField, CheckerType ch
 
 void MainWindow::resetFieldBackground(const std::string &boardField, CheckerType checker)
 {
-    logger->log("%s(): boardField: ", __FUNCTION__, boardField.c_str());
+    logger->log("%s(): boardField: %s", __FUNCTION__, boardField.c_str());
     auto button = boardFieldToButton.at(boardField);
     button->setStyleSheet(
         styleProvider.buildStyleSheetCheckerWithBackground(checker, ""));
 }
 
-void MainWindow::updateGameState(const uint32_t whiteLeftCheckersToPut,
+void MainWindow::updateGameState(const uint32_t turnNum,
+                                 const uint32_t whiteLeftCheckersToPut,
                                  const uint32_t blackLeftCheckersToPut,
                                  const uint32_t whiteLeftCheckersOnBoard,
                                  const uint32_t blackLeftCheckersOnBoard,
                                  const uint32_t whiteCheckersKilledByBlack,
                                  const uint32_t blackCheckersKilledByWhite)
 {
+    ui->gameStatusText->setText(QString::fromStdString("Game turn: " + std::to_string(turnNum)));
     std::string whitePlayerInfoStr = "left checkers to put: " +
                                      std::to_string(whiteLeftCheckersToPut) + "\n" +
                                      "white checkers on board: " +

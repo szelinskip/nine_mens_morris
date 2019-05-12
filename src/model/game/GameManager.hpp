@@ -22,7 +22,7 @@ using ActionPtr = std::unique_ptr<Action>;
 class GameManager
 {
 public:
-    GameManager(tools::Logger& logger);
+    GameManager(tools::Logger& logger, const bool shouldIntroducePauseBetweenPlayers = true);
     ~GameManager();
 
     GameManager() = delete;
@@ -40,7 +40,8 @@ public:
     void putAction(ActionPtr action);
     Move getInput();
 
-    void beforeTurnActions(const uint32_t whiteLeftCheckersToPut,
+    void beforeTurnActions(const uint32_t turnNum,
+                           const uint32_t whiteLeftCheckersToPut,
                            const uint32_t blackLeftCheckersToPut,
                            const uint32_t whiteLeftCheckersOnBoard,
                            const uint32_t blackLeftCheckersOnBoard,
@@ -49,6 +50,9 @@ public:
     void afterTurnActions(std::chrono::milliseconds elapsed, const Move& lastMove);
     void playersTurnAction(const Player* currentPlayer);
     void gameFinishedActions(const Player* winner);
+
+    void waitOnGameManager();
+    void waitUntilGameNotStarted();
 
 private:
     void runningLoop();
@@ -68,6 +72,7 @@ private:
     void handleActionMoveDone(ActionPtr action);
     void handleGuiOff();
     void handleGuiOn();
+    void handleWaitOnGame();
     Move buildInputMove();
     void resetGameManager();
 
@@ -102,6 +107,8 @@ private:
     std::condition_variable pauseCondition;
 
     std::atomic<bool> shouldUpdateUi;
+
+    bool shouldIntroducePauseBetweenPlayers;
 
     tools::Logger& logger;
 };

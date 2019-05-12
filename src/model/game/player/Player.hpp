@@ -29,6 +29,8 @@ public:
     virtual std::string getName() const;
     virtual PlayerColor getColor() const;
     virtual std::string getInfo() const;
+    virtual uint32_t getVisitedStates() const;
+    virtual uint32_t getPrunedStates() const;
     void incrementMovesNumber();
     uint32_t getMovesNumber() const;
 
@@ -37,6 +39,8 @@ protected:
     std::string name;
     PlayerColor color;
     uint32_t movesNumber;
+    uint32_t visitedStates;
+    uint32_t prunedStates;
 
     tools::Logger& logger;
 };

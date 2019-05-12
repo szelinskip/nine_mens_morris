@@ -18,7 +18,8 @@ public:
               const uint8_t whiteLeftCheckersOnBoard,
               const uint8_t blackLeftCheckersOnBoard,
               const uint8_t whiteCheckersKilledByBlack,
-              const uint8_t blackCheckersKilledByWhite);
+              const uint8_t blackCheckersKilledByWhite,
+              const bool gameOverDueToNoPossibleMovements);
 
     GameState(const GameState& otherGameState,
               GameBoard&& board,
@@ -64,6 +65,9 @@ public:
     bool isInFirstStage(const PlayerColor who) const;
     void applyMove(const Move& move);
 
+    void setGameOverDueToNoPossibleMovements();
+    bool isGameOverDueToNoPossibleMovements() const;
+
     std::string getStrRepr() const;
 
 private:
@@ -81,6 +85,8 @@ private:
     uint8_t blackLeftCheckersOnBoard;
     uint8_t whiteCheckersKilledByBlack;
     uint8_t blackCheckersKilledByWhite;
+
+    bool gameOverDueToNoPossibleMovements;
 };
 
 } // namespace model

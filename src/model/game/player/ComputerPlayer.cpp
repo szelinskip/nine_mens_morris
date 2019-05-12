@@ -25,6 +25,8 @@ ComputerPlayer::~ComputerPlayer() = default;
 bool ComputerPlayer::makeMove(GameState& state)
 {
     aiAlg->makeMove(state);
+    visitedStates = aiAlg->getVisitedStates();
+    prunedStates = aiAlg->getPrunedStates();
     auto action = std::make_unique<ActionMoveDone>(state.getLastMove());
     gameManager.putAction(std::move(action));
     return true;
