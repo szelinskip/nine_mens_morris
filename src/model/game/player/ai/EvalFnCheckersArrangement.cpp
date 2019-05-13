@@ -54,13 +54,13 @@ int EvalFnCheckersArrangement::evalGameState(const model::GameState &gameState, 
             gameOverPart = -1;
     }
 
-    return 14 * millInLastMovePart +
-           43 * numOfMorrisesPart +
-           10 * blockedCheckersNumPart +
-           8 * numOf1ToMorrisPart +
-           11 * leftCheckersPart +
-           5 * lastMoveBlockedMillPart +
-           1086 * gameOverPart;
+    return 14 * millInLastMovePart
+           + 43 * numOfMorrisesPart
+           + 10 * blockedCheckersNumPart
+           + 8 * numOf1ToMorrisPart
+           + 11 * leftCheckersPart
+           + 5 * lastMoveBlockedMillPart
+           + 1086 * gameOverPart;
 }
 
 } // namespace ai

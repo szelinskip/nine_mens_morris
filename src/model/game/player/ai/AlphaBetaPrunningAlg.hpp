@@ -28,7 +28,7 @@ public:
     virtual void makeMove(GameState& gameState) override;
     virtual std::string getInfo() const override;
 private:
-    int minMaxEnhancedAlphaBetaPrunning(const GameState& gameState,
+    int minMaxEnhancedAlphaBetaPrunning(GameState& gameState,
                                         const uint32_t currentDepth,
                                         int alpha,
                                         int beta,

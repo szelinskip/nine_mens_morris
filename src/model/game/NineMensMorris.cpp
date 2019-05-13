@@ -104,10 +104,10 @@ void NineMensMorris::startGame()
             gameOver = true;
             if(!isGameEndedWithDraw())
             {
-                if(!gameState.isGameOverDueToNoPossibleMovements())
-                    winner = currentPlayer;
+                if(gameState.whoIsWinnerIfGameOver() == PlayerColor::White)
+                    winner = whitePlayer.get();
                 else
-                    winner = getCurrentPlayer();
+                    winner = blackPlayer.get();
             }
         }
         gameManager->afterTurnActions(elapsed, gameState.getLastMove(), turnNum, timeConstraintExceeded);

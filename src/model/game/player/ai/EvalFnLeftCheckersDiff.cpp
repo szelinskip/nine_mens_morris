@@ -16,7 +16,20 @@ EvalFnLeftCheckersDiff &EvalFnLeftCheckersDiff::operator=(EvalFnLeftCheckersDiff
 
 int EvalFnLeftCheckersDiff::evalGameState(const model::GameState &gameState, const model::PlayerColor who)
 {
-    return 2 * gameState.getLeftCheckersOnBoard(who) - 3 * gameState.getLeftCheckersOnBoard(getOponent(who));
+    int score = 2 * gameState.getLeftCheckersOnBoard(who) - 3 * gameState.getLeftCheckersOnBoard(getOponent(who));
+
+    bool isGameOverMove = gameState.isGameOverState();
+    int gameOverPart = 0;
+    if(isGameOverMove)
+    {
+        PlayerColor winner = gameState.whoIsWinnerIfGameOver();
+        if(winner == who)
+            gameOverPart = 1;
+        else
+            gameOverPart = -1;
+    }
+
+    return score + 1000 * gameOverPart;
 }
 
 } // namespace ai

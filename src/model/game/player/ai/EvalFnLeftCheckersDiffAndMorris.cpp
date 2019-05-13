@@ -16,17 +16,34 @@ EvalFnLeftCheckersDiffAndMorris &EvalFnLeftCheckersDiffAndMorris::operator=(Eval
 
 int EvalFnLeftCheckersDiffAndMorris::evalGameState(const model::GameState &gameState, const model::PlayerColor who)
 {
-    int score = 2 * gameState.getLeftCheckersOnBoard(who) - 3 * gameState.getLeftCheckersOnBoard(getOponent(who));
+    int LeftcheckersDiffPart = gameState.getLeftCheckersOnBoard(who) - gameState.getLeftCheckersOnBoard(getOponent(who));
+
     bool millInLastMove = gameState.lastMoveCreatedMill();
+    int millInLastMovePart = 0;
     if(millInLastMove)
     {
         const auto& lastMove = gameState.getLastMove();
         if(lastMove.who == who)
-            score++;
+            millInLastMovePart = 1;
         else
-            score--;
+            millInLastMovePart = -1;
     }
-    return score;
+
+    bool isGameOverMove = gameState.isGameOverState();
+    int gameOverPart = 0;
+    if(isGameOverMove)
+    {
+        PlayerColor winner = gameState.whoIsWinnerIfGameOver();
+        if(winner == who)
+            gameOverPart = 1;
+        else
+            gameOverPart = -1;
+    }
+
+    return
+        7 * LeftcheckersDiffPart
+        + 20 * millInLastMovePart
+        + 1000 * gameOverPart;
 }
 
 } // namespace ai

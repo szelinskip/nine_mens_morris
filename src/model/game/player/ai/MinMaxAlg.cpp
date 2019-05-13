@@ -64,7 +64,7 @@ std::string MinMaxAlg::getInfo() const
     return AiAlgorithm::getInfo() + ", depth: " + std::to_string(depth);
 }
 
-int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, bool isMaximizing)
+int MinMaxAlg::minMax(GameState& gameState, const uint32_t currentDepth, bool isMaximizing)
 {
     visitedStates++;
     if(currentDepth == depth || gameState.isGameOverState() || checkTimeConstraint())
@@ -72,8 +72,15 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
 
     if(isMaximizing)
     {
-        int maxEval = std::numeric_limits<int>::min();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
+        if(possibleStates.size() == 0)
+        {
+            gameState.setGameOverDueToNoPossibleMovements();
+            return evaluate(gameState);
+        }
+
+        int maxEval = std::numeric_limits<int>::min();
+
         for(auto& possibleState : possibleStates)
         {
             int eval = minMax(possibleState, currentDepth + 1, false);
@@ -83,8 +90,15 @@ int MinMaxAlg::minMax(const GameState& gameState, const uint32_t currentDepth, b
     }
     else  // minimizing
     {
-        int minEval = std::numeric_limits<int>::max();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
+        if(possibleStates.size() == 0)
+        {
+            gameState.setGameOverDueToNoPossibleMovements();
+            return evaluate(gameState);
+        }
+
+        int minEval = std::numeric_limits<int>::max();
+
         for(auto& possibleState : possibleStates)
         {
             int eval = minMax(possibleState, currentDepth + 1, true);

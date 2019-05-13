@@ -43,12 +43,12 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
 
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
 
-//    std::stable_sort(possibleStates.begin(),
-//                     possibleStates.end(),
-//                     [this](const auto& lhs, const auto& rhs)
-//                     {
-//                         return evaluate(lhs) > evaluate(rhs);
-//                     });
+    std::stable_sort(possibleStates.begin(),
+                     possibleStates.end(),
+                     [this](const auto& lhs, const auto& rhs)
+                     {
+                         return evaluate(lhs) > evaluate(rhs);
+                     });
 
     if(possibleStates.size() == 0)
     {
@@ -79,7 +79,7 @@ std::string AlphaBetaPrunningAlg::getInfo() const
     return AiAlgorithm::getInfo() + ", depth: " + std::to_string(depth);
 }
 
-int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameState,
+int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(GameState& gameState,
                                                           const uint32_t currentDepth,
                                                           int alpha,
                                                           int beta,
@@ -91,15 +91,21 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
 
     if(isMaximizing)
     {
-        int maxEval = std::numeric_limits<int>::min();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
+        if(possibleStates.size() == 0)
+        {
+            gameState.setGameOverDueToNoPossibleMovements();
+            return evaluate(gameState);
+        }
 
-//        std::stable_sort(possibleStates.begin(),
-//                         possibleStates.end(),
-//                         [this](const auto& lhs, const auto& rhs)
-//                         {
-//                             return evaluate(lhs) > evaluate(rhs);
-//                         });
+        int maxEval = std::numeric_limits<int>::min();
+
+        std::stable_sort(possibleStates.begin(),
+                         possibleStates.end(),
+                         [this](const auto& lhs, const auto& rhs)
+                         {
+                             return evaluate(lhs) > evaluate(rhs);
+                         });
 
         for(auto i = 0u; i < possibleStates.size(); i++)
         {
@@ -116,15 +122,21 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(const GameState& gameS
     }
     else  // minimizing
     {
-        int minEval = std::numeric_limits<int>::max();
         std::vector<GameState> possibleStates = gameState.getAvailableStates(getOponent(who));
+        if(possibleStates.size() == 0)
+        {
+            gameState.setGameOverDueToNoPossibleMovements();
+            return evaluate(gameState);
+        }
 
-//        std::stable_sort(possibleStates.begin(),
-//                         possibleStates.end(),
-//                         [this](const auto& lhs, const auto& rhs)
-//                         {
-//                             return evaluate(lhs) < evaluate(rhs);
-//                         });
+        int minEval = std::numeric_limits<int>::max();
+
+        std::stable_sort(possibleStates.begin(),
+                         possibleStates.end(),
+                         [this](const auto& lhs, const auto& rhs)
+                         {
+                             return evaluate(lhs) < evaluate(rhs);
+                         });
 
         for(auto i = 0u; i < possibleStates.size(); i++)
         {
