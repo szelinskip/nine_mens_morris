@@ -14,7 +14,7 @@
    <string>Nine men's morris</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -22,6 +22,13 @@
       <width>661</width>
       <height>601</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QGroupBox
+{
+	border-image: url(:/images/images/nms_3.png) 35 55 55 26;
+}
+</string>
     </property>
     <layout class="QGridLayout" name="boardGridLayout">
      <property name="sizeConstraint">
@@ -109,6 +116,9 @@
          <width>70</width>
          <height>70</height>
         </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
        </property>
        <property name="text">
         <string/>
