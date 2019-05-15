@@ -27,8 +27,8 @@ public:
     AiAlgorithm& operator=(AiAlgorithm&&);
 
     virtual void makeMove(GameState& gameState) = 0;
-    virtual uint32_t getVisitedStates() const;
-    virtual uint32_t getPrunedStates() const;
+    virtual uint64_t getVisitedStates() const;
+    virtual uint64_t getPrunedStates() const;
     virtual bool wasSearchTimeExceeded() const;
     virtual std::string getInfo() const;
 
@@ -39,8 +39,8 @@ protected:
     PlayerColor who;
     std::unique_ptr<EvalFunction> evalFn;
 
-    uint32_t visitedStates;
-    uint32_t prunedStates;
+    uint64_t visitedStates;
+    uint64_t prunedStates;
 
     using SteadyClock = std::chrono::steady_clock;
     using Tp = std::chrono::steady_clock::time_point;

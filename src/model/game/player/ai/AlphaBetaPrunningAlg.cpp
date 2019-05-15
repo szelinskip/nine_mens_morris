@@ -43,12 +43,12 @@ void AlphaBetaPrunningAlg::makeMove(GameState& gameState)
 
     std::vector<GameState> possibleStates = gameState.getAvailableStates(who);
 
-    std::stable_sort(possibleStates.begin(),
-                     possibleStates.end(),
-                     [this](const auto& lhs, const auto& rhs)
-                     {
-                         return evaluate(lhs) > evaluate(rhs);
-                     });
+//    std::stable_sort(possibleStates.begin(),
+//                     possibleStates.end(),
+//                     [this](const auto& lhs, const auto& rhs)
+//                     {
+//                         return evaluate(lhs) > evaluate(rhs);
+//                     });
 
     if(possibleStates.size() == 0)
     {
@@ -100,12 +100,12 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(GameState& gameState,
 
         int maxEval = std::numeric_limits<int>::min();
 
-        std::stable_sort(possibleStates.begin(),
-                         possibleStates.end(),
-                         [this](const auto& lhs, const auto& rhs)
-                         {
-                             return evaluate(lhs) > evaluate(rhs);
-                         });
+//        std::stable_sort(possibleStates.begin(),
+//                         possibleStates.end(),
+//                         [this](const auto& lhs, const auto& rhs)
+//                         {
+//                             return evaluate(lhs) > evaluate(rhs);
+//                         });
 
         for(auto i = 0u; i < possibleStates.size(); i++)
         {
@@ -131,12 +131,12 @@ int AlphaBetaPrunningAlg::minMaxEnhancedAlphaBetaPrunning(GameState& gameState,
 
         int minEval = std::numeric_limits<int>::max();
 
-        std::stable_sort(possibleStates.begin(),
-                         possibleStates.end(),
-                         [this](const auto& lhs, const auto& rhs)
-                         {
-                             return evaluate(lhs) < evaluate(rhs);
-                         });
+//        std::stable_sort(possibleStates.begin(),
+//                         possibleStates.end(),
+//                         [this](const auto& lhs, const auto& rhs)
+//                         {
+//                             return evaluate(lhs) < evaluate(rhs);
+//                         });
 
         for(auto i = 0u; i < possibleStates.size(); i++)
         {

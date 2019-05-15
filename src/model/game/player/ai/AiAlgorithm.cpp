@@ -23,12 +23,12 @@ AiAlgorithm::~AiAlgorithm() = default;
 AiAlgorithm::AiAlgorithm(AiAlgorithm &&) = default;
 AiAlgorithm &AiAlgorithm::operator=(AiAlgorithm &&) = default;
 
-uint32_t AiAlgorithm::getVisitedStates() const
+uint64_t AiAlgorithm::getVisitedStates() const
 {
     return visitedStates;
 }
 
-uint32_t AiAlgorithm::getPrunedStates() const
+uint64_t AiAlgorithm::getPrunedStates() const
 {
     return prunedStates;
 }

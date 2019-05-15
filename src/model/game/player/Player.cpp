@@ -33,12 +33,12 @@ std::string Player::getInfo() const
     return "Color: " + colorToStr(color) + ", name: " + name;
 }
 
-uint32_t Player::getVisitedStates() const
+uint64_t Player::getVisitedStates() const
 {
     return visitedStates;
 }
 
-uint32_t Player::getPrunedStates() const
+uint64_t Player::getPrunedStates() const
 {
     return prunedStates;
 }

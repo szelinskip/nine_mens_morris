@@ -29,8 +29,8 @@ public:
     virtual std::string getName() const;
     virtual PlayerColor getColor() const;
     virtual std::string getInfo() const;
-    virtual uint32_t getVisitedStates() const;
-    virtual uint32_t getPrunedStates() const;
+    virtual uint64_t getVisitedStates() const;
+    virtual uint64_t getPrunedStates() const;
     virtual bool wasSearchTimeExceeded() const;
     void incrementMovesNumber();
     uint32_t getMovesNumber() const;
@@ -40,8 +40,8 @@ protected:
     std::string name;
     PlayerColor color;
     uint32_t movesNumber;
-    uint32_t visitedStates;
-    uint32_t prunedStates;
+    uint64_t visitedStates;
+    uint64_t prunedStates;
     bool searchTimeExceeded;
 
     tools::Logger& logger;

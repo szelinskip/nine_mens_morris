@@ -70,7 +70,7 @@ void NineMensMorris::startGame()
             timeConstraintExceeded = currentPlayer->wasSearchTimeExceeded();
             gameMovesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
                                 "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
-                                "visited states: %d, pruned states: %d, time constraint exceeded: %d",
+                                "visited states: %llu, pruned states: %llu, time constraint exceeded: %d",
                                 turnNum,
                                 currentPlayer->getName().c_str(),
                                 currentPlayer->getMovesNumber(),
@@ -83,7 +83,7 @@ void NineMensMorris::startGame()
                                 timeConstraintExceeded);
             gameStatesLogger.log("Turn no: %u, Who: %12s, this player move no: %u, from field: %2s, "
                                  "to field: %2s, oponent's checker taken: %2s, turn time: %.3f [s], "
-                                 "visited states: %d, pruned states: %d, time constraint exceeded: %d, "
+                                 "visited states: %llu, pruned states: %llu, time constraint exceeded: %d, "
                                  "game state:\n%s",
                                  turnNum,
                                  currentPlayer->getName().c_str(),
